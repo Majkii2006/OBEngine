@@ -2,47 +2,49 @@
 #include <string>
 #include <vector>
 
+class Order {
+	public:
+		enum class Side { Sell, Buy };	
+
+	private:
+		int id_;
+		Side side_;	
+		double price_;
+		int quantity_;
+	public:
+		Order(int id, Side side, double price, int quantity) {
+			id_ = id;
+			side_ = side;
+			price_ = price;				
+			quantity_ = quantity;
+		}
+		~Order() = default;
+	
+		//Getters
+		int get_id() const { return id_; }
+		Side get_side() const { return side_; }
+		double get_price() const { return price_; }
+		int get_quantity() const { return quantity_; }
+			
+		//Order Methods
+		void quantity_change(int amount) {
+			if (amount == 0) {
+				return;
+			}
+			if (amount > 0) {
+				quantity_=+amount;
+			}
+			if (amount < 0) {
+				quantity_=-amount;
+			}
+		}
+};
+
+
+
 class OrderBook {
 
-	public:
-	class Order {
-		public:
-			enum class Side { Sell, Buy };	
-
-		private:
-			int id_;
-			Side side_;	
-			double price_;
-			int quantity_;
-		public:
-			Order(int id, Side side, double price, int quantity) {
-				id_ = id;
-				side_ = side;
-				price_ = price;
-				quantity_ = quantity;
-			}
-			~Order() = default;
 	
-			//Getters
-			int get_id() const { return id_; }
-			Side get_side() const { return side_; }
-			double get_price() const { return price_; }
-			int get_quantity() const { return quantity_; }
-			
-			//Order Methods
-			void quantity_change(int amount) {
-				if (amount == 0) {
-					return;
-				}
-				if (amount > 0) {
-					quantity_=+amount;
-				}
-				if (amount < 0) {
-					quantity_=-amount;
-				}
-			}
-		};
-
 	private:
 		std::string name_ { };
 		std::vector<Order> orders;
@@ -77,16 +79,15 @@ class OrderBook {
 					orders.erase(it);
 					return;
 				}
-				else {
-					std::cout << "\nThere is no order with that ID" << std::endl;
-				}
 			}
+			std::cout << "There is no order with that ID, returning...";
+			return;
 			
 		}
 
 		void print_all_orders() const {
 			int counter { 1 };
-			std::cout << "Orders for " << "'"<< get_name() << "'"<< ":";
+			std::cout << "\nOrders for " << "'"<< get_name() << "'"<< ":";
 			for (auto it = orders.begin(); it != orders.end(); ++it) {
 				std::cout << "\nOrder number: " << counter << std::endl;
 				std::cout << "Order ID: " << it->get_id() << std::endl;
@@ -121,10 +122,10 @@ int main() {
 
 	OrderBook ob("Main OrderBook");
 	
-	OrderBook::Order order1(ID::get_unique_id(), OrderBook::Order::Side::Buy, 1000.25, 22); 
-	OrderBook::Order order2(ID::get_unique_id(), OrderBook::Order::Side::Buy, 1000.50, 15); 
-	OrderBook::Order order3(ID::get_unique_id(), OrderBook::Order::Side::Sell, 1000.75, 18); 
-	OrderBook::Order order4(ID::get_unique_id(), OrderBook::Order::Side::Sell, 1001.00, 5); 
+	Order order1(ID::get_unique_id(), Order::Side::Buy, 1000.25, 22); 
+	Order order2(ID::get_unique_id(), Order::Side::Buy, 1000.50, 15); 
+	Order order3(ID::get_unique_id(), Order::Side::Sell, 1000.75, 18); 
+	Order order4(ID::get_unique_id(), Order::Side::Sell, 1001.00, 5); 
 	ob.add_order(order1);
 	//std::cout << "debugging"; // potem destruktor, wydaje mi sie ze duplikuje obiekty
 	ob.add_order(order2);
