@@ -18,7 +18,9 @@ class Order {
 			price_ = price;				
 			quantity_ = quantity;
 		}
-		~Order() = default;
+		~Order() {
+			std::cout << "Destructor Called" << std::endl;
+		};
 	
 		//Getters
 		int get_id() const { return id_; }
@@ -47,25 +49,25 @@ class OrderBook {
 	
 	private:
 		std::string name_ { };
-		std::vector<Order> orders;
+		std::vector<Order*> orders;
 
 	public: 
 		OrderBook(std::string name) {
 			name_ = name;
 		};
 		
-		void add_order(const Order& order){
-			// orders.push_back(order); //tutaj jest blad, push_back -> kopia
+		void add_order(Order& order) {
+			// orders.push_back(order); //tutaj jest blad, push_back -> kopia, jednak nie 
 			//orders.emplace_back(order.get_id(), order.get_side(),
-			//		order.get_price(), order.get_quantity());
-			orders.push_back(order);
+			//		order.get_price(), order.get_quantity())
+			orders.push_back(&order);
 		} 
 		
 		const std::string& get_name() const {
 			return name_;
 		}
 
-		const std::vector<Order>& get_orders() const { 
+		const std::vector<Order*>& get_orders() const { 
 				return orders;
 		}
 
@@ -75,7 +77,10 @@ class OrderBook {
 
 		void delete_order(int id) {
 			for (auto it = orders.begin(); it != orders.end(); ++it) {
-				if (it->get_id() == id) {
+				if (*it == nullptr ) {
+					continue;
+				}	
+				if ( (*it)->get_id() == id) {
 					orders.erase(it);
 					return;
 				}
@@ -88,12 +93,12 @@ class OrderBook {
 		void print_all_orders() const {
 			int counter { 1 };
 			std::cout << "\nOrders for " << "'"<< get_name() << "'"<< ":";
-			for (auto it = orders.begin(); it != orders.end(); ++it) {
+			for (auto ptr : orders) {
 				std::cout << "\nOrder number: " << counter << std::endl;
-				std::cout << "Order ID: " << it->get_id() << std::endl;
-				std::cout << it->get_price() << " ";
-				std::cout << it->get_quantity() << " ";
-				int operation = static_cast<int>(it->get_side());
+				std::cout << "Order ID: " << ptr->get_id() << std::endl;
+				std::cout << ptr->get_price() << " ";
+				std::cout << ptr->get_quantity() << " ";
+				int operation = static_cast<int>(ptr->get_side());
 				if (operation == 0) {
 					std::cout << "Sell" << std::endl;
 				}
