@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -44,12 +45,28 @@ class Order {
 
 
 
-class OrderBook {
-
-	
+class OrderBook {	
 	private:
 		std::string name_ { };
 		std::vector<Order*> orders;
+
+
+		void match_order(Order* order) {
+			for (auto it = orders.begin(); it != orders.end() - 1; ++it) { //push_back -> na koniec wiec -1 to zapobiega sprawdzaniu siebie samego
+				if ((*it)->get_price() == order->get_price()){
+					std::cout << "Dopasowano po cenie!" << std::endl;
+				}	
+			}	
+
+
+
+
+		}
+
+		void execute_order() {
+			return;
+		}
+
 
 	public: 
 		OrderBook(std::string name) {
@@ -61,6 +78,8 @@ class OrderBook {
 			//orders.emplace_back(order.get_id(), order.get_side(),
 			//		order.get_price(), order.get_quantity())
 			orders.push_back(&order);
+			match_order(&order);
+			execute_order();
 		} 
 		
 		const std::string& get_name() const {
@@ -92,7 +111,7 @@ class OrderBook {
 
 		void print_all_orders() const {
 			int counter { 1 };
-			std::cout << "\nOrders for " << "'"<< get_name() << "'"<< ":";
+			std::cout << "\nOrders for " << "'"<< get_name() << "'"<< ":" << std::endl;
 			for (auto ptr : orders) {
 				std::cout << "\nOrder number: " << counter << std::endl;
 				std::cout << "Order ID: " << ptr->get_id() << std::endl;
@@ -108,6 +127,8 @@ class OrderBook {
 				counter++;
 			}
 		}
+
+		
 		
 
 		
@@ -131,6 +152,7 @@ int main() {
 	Order order2(ID::get_unique_id(), Order::Side::Buy, 1000.50, 15); 
 	Order order3(ID::get_unique_id(), Order::Side::Sell, 1000.75, 18); 
 	Order order4(ID::get_unique_id(), Order::Side::Sell, 1001.00, 5); 
+	Order order5(ID::get_unique_id(), Order::Side::Sell, 1001.00, 20);
 	ob.add_order(order1);
 	//std::cout << "debugging"; // potem destruktor, wydaje mi sie ze duplikuje obiekty
 	ob.add_order(order2);
@@ -139,6 +161,7 @@ int main() {
 	//std::cout << "debugging";
 	ob.add_order(order4);
 	//std::cout << "debugging";
+	ob.add_order(order5);
 //------------------------------
 	ob.print_all_orders();
 
