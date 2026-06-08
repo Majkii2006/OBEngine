@@ -1,4 +1,4 @@
-#include <cstddef>
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -8,7 +8,7 @@ class Order {
 		enum class Side { Sell, Buy };	
 
 	private:
-		int id_;
+		size_t id_;
 		Side side_;	
 		double price_;
 		int quantity_;
@@ -20,11 +20,11 @@ class Order {
 			quantity_ = quantity;
 		}
 		~Order() {
-			std::cout << "Destructor Called" << std::endl;
+			std::cout << "\nDestructor Called" << std::endl;
 		};
 	
 		//Getters
-		int get_id() const { return id_; }
+		size_t get_id() const { return id_; }
 		Side get_side() const { return side_; }
 		double get_price() const { return price_; }
 		int get_quantity() const { return quantity_; }
@@ -49,22 +49,50 @@ class OrderBook {
 	private:
 		std::string name_ { };
 		std::vector<Order*> orders;
+		std::vector<Order*> buy_orders;
+		std::vector<Order*> sell_orders;
+		double bid_price_ {};
+		double ask_price_ {};
 
 
 		void match_order(Order* order) {
-			for (auto it = orders.begin(); it != orders.end() - 1; ++it) { //push_back -> na koniec wiec -1 to zapobiega sprawdzaniu siebie samego
-				if ((*it)->get_price() == order->get_price()){
-					std::cout << "Dopasowano po cenie!" << std::endl;
-				}	
+			for (auto it { orders.begin() }; it != orders.end() - 1; ++it) { //push_back -> na koniec wiec -1 to zapobiega sprawdzaniu siebie samego
+				auto order_site = order->get_side();	
+				auto it_order_site = (*it)->get_side();
+				if ((*it)->get_price() == order->get_price() && (order_site == Order::Side::Buy && it_order_site == Order::Side::Sell
+							|| order_site == Order::Side::Sell && it_order_site == Order::Side::Buy)) 
+				{
+					std::cout << "There IS matching order!" << std::endl;
+					return;
+				}
 			}	
-
+			std::cout << "There is no matching order" << std::endl;	
 
 
 
 		}
 
 		void execute_order() {
+			//aktualizacja cen rynkowych kupna i sprzedazy
 			return;
+		}
+
+		void update_bid_and_ask_price() {
+		//minimalna cena sprzedazy i maks cena kupna potrzebuje
+			if (buy_orders.size() > 0){
+				auto bid_it = std::max_element(buy_orders.begin(), buy_orders.end(), [](const Order* a, const Order* b) {
+							return a->get_price() < b->get_price();
+						});
+				this->bid_price_ = (*bid_it)->get_price();
+			} 
+			if (sell_orders.size() > 0){
+				auto ask_it = std::min_element(sell_orders.begin(), sell_orders.end(), [](const Order* a, const Order* b){
+						return a->get_price() < b->get_price();
+						});
+				this->ask_price_ = (*ask_it)->get_price();
+			}	
+			std::cout << "CURRENT BID PRICE: " << bid_price_ << std::endl;
+			std::cout << "CURRENT ASK PRICE: " << ask_price_ << std::endl;
 		}
 
 
@@ -78,6 +106,15 @@ class OrderBook {
 			//orders.emplace_back(order.get_id(), order.get_side(),
 			//		order.get_price(), order.get_quantity())
 			orders.push_back(&order);
+
+			if (order.get_side() == Order::Side::Buy){
+				buy_orders.push_back(&order);
+			}
+			else {
+				sell_orders.push_back(&order);
+			}
+
+			update_bid_and_ask_price();
 			match_order(&order);
 			execute_order();
 		} 
@@ -92,6 +129,14 @@ class OrderBook {
 
 		int get_number_of_orders() const {
 			return orders.size(); 
+		}
+
+		double get_ask_price() const {
+			return ask_price_;
+		}
+
+		double get_bid_price() const {
+			return bid_price_;
 		}
 
 		void delete_order(int id) {
@@ -137,10 +182,10 @@ class OrderBook {
 
 //Methods for ID
 namespace ID {
-	int get_unique_id() {
-		static int id {};
+	size_t get_unique_id() {
+		static size_t id {};
 		id++;
-		return id;
+		return id+1000;
 	}
 }
 
@@ -148,11 +193,11 @@ int main() {
 
 	OrderBook ob("Main OrderBook");
 	
-	Order order1(ID::get_unique_id(), Order::Side::Buy, 1000.25, 22); 
+	Order order1(ID::get_unique_id(), Order::Side::Buy, 1002.25, 22); 
 	Order order2(ID::get_unique_id(), Order::Side::Buy, 1000.50, 15); 
 	Order order3(ID::get_unique_id(), Order::Side::Sell, 1000.75, 18); 
 	Order order4(ID::get_unique_id(), Order::Side::Sell, 1001.00, 5); 
-	Order order5(ID::get_unique_id(), Order::Side::Sell, 1001.00, 20);
+	Order order5(ID::get_unique_id(), Order::Side::Buy, 1001.00, 20);
 	ob.add_order(order1);
 	//std::cout << "debugging"; // potem destruktor, wydaje mi sie ze duplikuje obiekty
 	ob.add_order(order2);
@@ -165,7 +210,7 @@ int main() {
 //------------------------------
 	ob.print_all_orders();
 
-	ob.delete_order(2);
+	ob.delete_order(1002);
 
 	ob.print_all_orders();
 
