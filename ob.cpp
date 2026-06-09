@@ -30,16 +30,9 @@ class Order {
 		int get_quantity() const { return quantity_; }
 			
 		//Order Methods
-		void quantity_change(int amount) {
-			if (amount == 0) {
-				return;
-			}
-			if (amount > 0) {
-				quantity_=+amount;
-			}
-			if (amount < 0) {
-				quantity_=-amount;
-			}
+		void set_quantity(int number) {
+			quantity_ = quantity_ - number;
+			std::cout << "Zostało " << quantity_ << std::endl;
 		}
 };
 
@@ -56,20 +49,16 @@ class OrderBook {
 
 
 		void match_order(Order* order) {
-			for (auto it { orders.begin() }; it != orders.end() - 1; ++it) { //push_back -> na koniec wiec -1 to zapobiega sprawdzaniu siebie samego
-				auto order_site = order->get_side();	
-				auto it_order_site = (*it)->get_side();
-				if ((*it)->get_price() == order->get_price() && (order_site == Order::Side::Buy && it_order_site == Order::Side::Sell
-							|| order_site == Order::Side::Sell && it_order_site == Order::Side::Buy)) 
-				{
-					std::cout << "There IS matching order!" << std::endl;
-					return;
-				}
-
 			if (order->get_side() == Order::Side::Buy){
 				//szukamy zlecenia sprzedazy
 				if (order->get_price() >= get_ask_price()){
-					for (auto it { buy_orders.begin() }; it != buy_orders.end(); ++it){
+					for (auto it { sell_orders.begin() }; it != sell_orders.end(); ++it){
+						if (order->get_price() >= (*it)->get_price() && order->get_quantity() < (*it)->get_quantity()) {
+							std::cout << "Found the matching order" << std::endl;
+							(*it)->set_quantity(order->get_quantity());	
+							//execute_order(); // dla zabrania poprostu wolumenu z orderu, ale order w orderbooku zostaje
+							return;
+						}
 					}
 				}
 				else {
@@ -80,14 +69,11 @@ class OrderBook {
 				//szukamy zlecenia kupna
 			}
 
-
-
-			}	
-			std::cout << "There is no matching order" << std::endl;	
+		}	
 
 
 
-		}
+		
 
 		void execute_order() {
 			return;
@@ -224,11 +210,12 @@ int main() {
 	OrderBook ob("Main OrderBook");
 	
 	Order order1(ID::get_unique_id(), Order::Side::Buy, 4180.50, 22); 
-	Order order2(ID::get_unique_id(), Order::Side::Buy, 4180.75, 15); 
-	Order order3(ID::get_unique_id(), Order::Side::Sell, 4181.00, 18); 
+	Order order2(ID::get_unique_id(), Order::Side::Buy, 4180.75, 15);
+	Order order3(ID::get_unique_id(), Order::Side::Sell, 4181.00, 18); // 
 	Order order4(ID::get_unique_id(), Order::Side::Sell, 4181.25, 5); 
 	Order order5(ID::get_unique_id(), Order::Side::Buy, 4180.25, 20);
 	Order order6(ID::get_unique_id(), Order::Side::Buy, 4180.60, 2);
+	Order order7(ID::get_unique_id(), Order::Side::Buy, 4181.00, 17); //
 	ob.add_order(order1);
 	//std::cout << "debugging"; // potem destruktor, wydaje mi sie ze duplikuje obiekty
 	ob.add_order(order2);
@@ -239,6 +226,7 @@ int main() {
 	//std::cout << "debugging";
 	ob.add_order(order5);
 	ob.add_order(order6);
+	ob.add_order(order7);
 //------------------------------
 	ob.print_all_orders();
 
