@@ -20,7 +20,7 @@ class Order {
 			quantity_ = quantity;
 		}
 		~Order() {
-			std::cout << "\nDestructor Called" << std::endl;
+			//std::cout << "\nDestructor Called" << std::endl;
 		};
 	
 		//Getters
@@ -65,6 +65,23 @@ class OrderBook {
 					std::cout << "There IS matching order!" << std::endl;
 					return;
 				}
+
+			if (order->get_side() == Order::Side::Buy){
+				//szukamy zlecenia sprzedazy
+				if (order->get_price() >= get_ask_price()){
+					for (auto it { buy_orders.begin() }; it != buy_orders.end(); ++it){
+					}
+				}
+				else {
+					std::cout << "\nYour order was added to passive buyers" << std::endl;
+				}
+			}
+			if (order->get_side() == Order::Side::Sell){
+				//szukamy zlecenia kupna
+			}
+
+
+
 			}	
 			std::cout << "There is no matching order" << std::endl;	
 
@@ -73,12 +90,10 @@ class OrderBook {
 		}
 
 		void execute_order() {
-			//aktualizacja cen rynkowych kupna i sprzedazy
 			return;
 		}
 
 		void update_bid_and_ask_price() {
-		//minimalna cena sprzedazy i maks cena kupna potrzebuje
 			if (buy_orders.size() > 0){
 				auto bid_it = std::max_element(buy_orders.begin(), buy_orders.end(), [](const Order* a, const Order* b) {
 							return a->get_price() < b->get_price();
@@ -91,8 +106,17 @@ class OrderBook {
 						});
 				this->ask_price_ = (*ask_it)->get_price();
 			}	
-			std::cout << "CURRENT BID PRICE: " << bid_price_ << std::endl;
-			std::cout << "CURRENT ASK PRICE: " << ask_price_ << std::endl;
+			//std::cout << "CURRENT BID PRICE: " << bid_price_ << std::endl;
+			//std::cout << "CURRENT ASK PRICE: " << ask_price_ << std::endl;
+		}
+
+		void sort_vectors() {
+			std::stable_sort(buy_orders.begin(), buy_orders.end(), [](const Order* a, const Order* b) {
+					return a->get_price() >	b->get_price(); // posortowane malejaco
+				});
+			std::stable_sort(sell_orders.begin(), sell_orders.end(), [](const Order* a, const Order* b) {
+					return a->get_price() > b->get_price(); // posortowane malejaco
+					});
 		}
 
 
@@ -102,7 +126,7 @@ class OrderBook {
 		};
 		
 		void add_order(Order& order) {
-			// orders.push_back(order); //tutaj jest blad, push_back -> kopia, jednak nie 
+			// orders.push_back(order);  
 			//orders.emplace_back(order.get_id(), order.get_side(),
 			//		order.get_price(), order.get_quantity())
 			orders.push_back(&order);
@@ -115,6 +139,7 @@ class OrderBook {
 			}
 
 			update_bid_and_ask_price();
+			sort_vectors();
 			match_order(&order);
 			execute_order();
 		} 
@@ -157,20 +182,25 @@ class OrderBook {
 		void print_all_orders() const {
 			int counter { 1 };
 			std::cout << "\nOrders for " << "'"<< get_name() << "'"<< ":" << std::endl;
-			for (auto ptr : orders) {
+			std::cout << "\n 	Current ASK price: " << get_ask_price() << std::endl;
+			std::cout << "\n	Current BID price: " << get_bid_price() << std::endl;
+			for (auto ptr : sell_orders) {
 				std::cout << "\nOrder number: " << counter << std::endl;
 				std::cout << "Order ID: " << ptr->get_id() << std::endl;
 				std::cout << ptr->get_price() << " ";
 				std::cout << ptr->get_quantity() << " ";
-				int operation = static_cast<int>(ptr->get_side());
-				if (operation == 0) {
-					std::cout << "Sell" << std::endl;
-				}
-				else if (operation == 1) {
-					std::cout << "Buy" << std::endl;
-				}
+				std::cout << "Sell" << std::endl;	
 				counter++;
 			}
+			for (auto ptr : buy_orders) {
+				std::cout << "\nOrder number: " << counter << std::endl;
+				std::cout << "Order ID: " << ptr->get_id() << std::endl;
+				std::cout << ptr->get_price() << " ";
+				std::cout << ptr->get_quantity() << " ";
+				std::cout << "Buy" << std::endl;	
+				counter++;
+			}
+			
 		}
 
 		
@@ -193,11 +223,12 @@ int main() {
 
 	OrderBook ob("Main OrderBook");
 	
-	Order order1(ID::get_unique_id(), Order::Side::Buy, 1002.25, 22); 
-	Order order2(ID::get_unique_id(), Order::Side::Buy, 1000.50, 15); 
-	Order order3(ID::get_unique_id(), Order::Side::Sell, 1000.75, 18); 
-	Order order4(ID::get_unique_id(), Order::Side::Sell, 1001.00, 5); 
-	Order order5(ID::get_unique_id(), Order::Side::Buy, 1001.00, 20);
+	Order order1(ID::get_unique_id(), Order::Side::Buy, 4180.50, 22); 
+	Order order2(ID::get_unique_id(), Order::Side::Buy, 4180.75, 15); 
+	Order order3(ID::get_unique_id(), Order::Side::Sell, 4181.00, 18); 
+	Order order4(ID::get_unique_id(), Order::Side::Sell, 4181.25, 5); 
+	Order order5(ID::get_unique_id(), Order::Side::Buy, 4180.25, 20);
+	Order order6(ID::get_unique_id(), Order::Side::Buy, 4180.60, 2);
 	ob.add_order(order1);
 	//std::cout << "debugging"; // potem destruktor, wydaje mi sie ze duplikuje obiekty
 	ob.add_order(order2);
@@ -207,12 +238,11 @@ int main() {
 	ob.add_order(order4);
 	//std::cout << "debugging";
 	ob.add_order(order5);
+	ob.add_order(order6);
 //------------------------------
 	ob.print_all_orders();
 
-	ob.delete_order(1002);
 
-	ob.print_all_orders();
 
 	return 0;
 }
