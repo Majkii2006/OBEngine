@@ -20,7 +20,7 @@ class Order {
 			quantity_ = quantity;
 		}
 		~Order() {
-			//std::cout << "\nDestructor Called" << std::endl;
+			std::cout << "\nDestructor Called" << std::endl;
 		};
 	
 		//Getters
@@ -47,17 +47,27 @@ class OrderBook {
 		double bid_price_ {};
 		double ask_price_ {};
 
+		void delete_order(Order* order){
+			//Musze usunac obiekt ze stosu -> przy duzej ilosci obiektow => stack overflow	
+			delete order;	
+		}
+
 
 		void match_order(Order* order) {
 			if (order->get_side() == Order::Side::Buy){
 				//szukamy zlecenia sprzedazy
 				if (order->get_price() >= get_ask_price()){
 					for (auto it { sell_orders.begin() }; it != sell_orders.end(); ++it){
-						if (order->get_price() >= (*it)->get_price() && order->get_quantity() < (*it)->get_quantity()) {
+						if (order->get_quantity() < (*it)->get_quantity()) {
 							std::cout << "Found the matching order" << std::endl;
 							(*it)->set_quantity(order->get_quantity());	
 							//execute_order(); // dla zabrania poprostu wolumenu z orderu, ale order w orderbooku zostaje
 							return;
+						}
+						else if (order->get_quantity() == (*it)->get_quantity()){
+							std::cout << "Found the matching order, fully bought" << std::endl;
+							delete_order(*it);
+							return;	
 						}
 					}
 				}
@@ -127,7 +137,6 @@ class OrderBook {
 			update_bid_and_ask_price();
 			sort_vectors();
 			match_order(&order);
-			execute_order();
 		} 
 		
 		const std::string& get_name() const {
@@ -215,7 +224,7 @@ int main() {
 	Order order4(ID::get_unique_id(), Order::Side::Sell, 4181.25, 5); 
 	Order order5(ID::get_unique_id(), Order::Side::Buy, 4180.25, 20);
 	Order order6(ID::get_unique_id(), Order::Side::Buy, 4180.60, 2);
-	Order order7(ID::get_unique_id(), Order::Side::Buy, 4181.00, 17); //
+	Order order7(ID::get_unique_id(), Order::Side::Buy, 4181.00, 18); //
 	ob.add_order(order1);
 	//std::cout << "debugging"; // potem destruktor, wydaje mi sie ze duplikuje obiekty
 	ob.add_order(order2);
