@@ -47,29 +47,49 @@ class OrderBook {
 		double bid_price_ {};
 		double ask_price_ {};
 
-		void delete_order(Order* order){
-			//Musze usunac obiekt ze stosu -> przy duzej ilosci obiektow => stack overflow	
-			delete order;	
+
+
+		void delete_order(size_t id) {
+    	    	    auto lambda = [id](const Order* ptr) { return ptr->get_id() == id; };
+    	    	    
+    	    	    buy_orders.erase(std::remove_if(buy_orders.begin(), buy_orders.end(), lambda), buy_orders.end());
+    	    	    sell_orders.erase(std::remove_if(sell_orders.begin(), sell_orders.end(), lambda), sell_orders.end());
+
+    	    	    for (auto it = orders.begin(); it != orders.end(); ++it) {
+        		if ((*it)->get_id() == id) {
+            	    	    Order* ptr_to_delete = *it; 
+            	    	    orders.erase(it);           
+            	    	    delete ptr_to_delete;       
+            	    	    update_bid_and_ask_price();
+            	    	    return;
+        		}
+    	    	    }
+    	    	    std::cout << "There is no order with that ID, returning...";
 		}
 
-
 		void match_order(Order* order) {
+			// Dla kupującego:
 			if (order->get_side() == Order::Side::Buy){
 				//szukamy zlecenia sprzedazy
 				if (order->get_price() >= get_ask_price()){
 					for (auto it { sell_orders.begin() }; it != sell_orders.end(); ++it){
 						if (order->get_quantity() < (*it)->get_quantity()) {
 							std::cout << "Found the matching order" << std::endl;
-							(*it)->set_quantity(order->get_quantity());	
-							//execute_order(); // dla zabrania poprostu wolumenu z orderu, ale order w orderbooku zostaje
-							return;
+							(*it)->set_quantity(order->get_quantity());
+							delete_order(order->get_id());
+							break;
 						}
 						else if (order->get_quantity() == (*it)->get_quantity()){
 							std::cout << "Found the matching order, fully bought" << std::endl;
-							delete_order(*it);
-							return;	
+							delete_order((*it)->get_id());
+							delete_order(order->get_id());
+							break;
+						}
+						else {
+							
 						}
 					}
+						
 				}
 				else {
 					std::cout << "\nYour order was added to passive buyers" << std::endl;
@@ -78,11 +98,7 @@ class OrderBook {
 			if (order->get_side() == Order::Side::Sell){
 				//szukamy zlecenia kupna
 			}
-
 		}	
-
-
-
 		
 
 		void execute_order() {
@@ -198,11 +214,6 @@ class OrderBook {
 			
 		}
 
-		
-		
-
-		
-
 };
 
 //Methods for ID
@@ -218,24 +229,20 @@ int main() {
 
 	OrderBook ob("Main OrderBook");
 	
-	Order order1(ID::get_unique_id(), Order::Side::Buy, 4180.50, 22); 
-	Order order2(ID::get_unique_id(), Order::Side::Buy, 4180.75, 15);
-	Order order3(ID::get_unique_id(), Order::Side::Sell, 4181.00, 18); // 
-	Order order4(ID::get_unique_id(), Order::Side::Sell, 4181.25, 5); 
-	Order order5(ID::get_unique_id(), Order::Side::Buy, 4180.25, 20);
-	Order order6(ID::get_unique_id(), Order::Side::Buy, 4180.60, 2);
-	Order order7(ID::get_unique_id(), Order::Side::Buy, 4181.00, 18); //
-	ob.add_order(order1);
-	//std::cout << "debugging"; // potem destruktor, wydaje mi sie ze duplikuje obiekty
-	ob.add_order(order2);
-	//std::cout << "debugging";
-	ob.add_order(order3);
-	//std::cout << "debugging";
-	ob.add_order(order4);
-	//std::cout << "debugging";
-	ob.add_order(order5);
-	ob.add_order(order6);
-	ob.add_order(order7);
+	Order *order1 = new Order(ID::get_unique_id(), Order::Side::Buy, 4180.50, 22); 
+	Order *order2 = new Order(ID::get_unique_id(), Order::Side::Buy, 4180.75, 15);
+	Order *order3 = new Order(ID::get_unique_id(), Order::Side::Sell, 4181.00, 18); // 
+	Order *order4 = new Order(ID::get_unique_id(), Order::Side::Sell, 4181.25, 5); 
+	Order *order5 = new Order(ID::get_unique_id(), Order::Side::Buy, 4180.25, 20);
+	Order *order6 = new Order(ID::get_unique_id(), Order::Side::Buy, 4180.60, 2);
+	Order *order7 = new Order(ID::get_unique_id(), Order::Side::Buy, 4181.00, 18); //
+	ob.add_order(*order1);
+	ob.add_order(*order2);
+	ob.add_order(*order3);
+	ob.add_order(*order4);
+	ob.add_order(*order5);
+	ob.add_order(*order6);
+	ob.add_order(*order7);
 //------------------------------
 	ob.print_all_orders();
 
