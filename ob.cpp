@@ -20,7 +20,7 @@ class Order {
 			quantity_ = quantity;
 		}
 		~Order() {
-			std::cout << "\nDestructor Called" << std::endl;
+			//std::cout << "\nDestructor Called" << std::endl;
 		};
 	
 		//Getters
@@ -32,7 +32,6 @@ class Order {
 		//Order Methods
 		void set_quantity(int number) {
 			quantity_ = quantity_ - number;
-			std::cout << "Zostało " << quantity_ << std::endl;
 		}
 };
 
@@ -67,36 +66,45 @@ class OrderBook {
     	    	    std::cout << "There is no order with that ID, returning...";
 		}
 
-		void match_order(Order* order) {
+		void match_order_limit(Order* order) {
 			// Dla kupującego:
 			if (order->get_side() == Order::Side::Buy){
 				//szukamy zlecenia sprzedazy
 				if (order->get_price() >= get_ask_price()){
-					for (auto it { sell_orders.begin() }; it != sell_orders.end(); ++it){
-						if (order->get_quantity() < (*it)->get_quantity()) {
+					 //musze iterowac od konca bo mam malejąco pozycje 
+					for (auto it { sell_orders.rbegin() }; it != sell_orders.rend(); ++it) {	
+						if (order->get_quantity() < (*it)->get_quantity() && order->get_price() >= (*it)->get_price()) {
 							std::cout << "Found the matching order" << std::endl;
+							std::cout << "The order " << order->get_id()<< " been completed successfully" << std::endl;
 							(*it)->set_quantity(order->get_quantity());
 							delete_order(order->get_id());
 							break;
 						}
-						else if (order->get_quantity() == (*it)->get_quantity()){
-							std::cout << "Found the matching order, fully bought" << std::endl;
+						if (order->get_quantity() == (*it)->get_quantity() && order->get_price() >= (*it)->get_price()){
+							std::cout << "Found the matching order and fully bought" << std::endl;
 							delete_order((*it)->get_id());
 							delete_order(order->get_id());
 							break;
 						}
-						else {
-							
+						if (order->get_quantity() > (*it)->get_quantity()  && order->get_price() >= (*it)->get_price()){
+							(order)->set_quantity((*it)->get_quantity());
+							std::cout << "\nThe order " << order->get_id() 
+								<< " was partially filled." << "\nRemaining vol.: "<< order->get_quantity()
+								 <<"\nSearching for next..." << std::endl;
+							delete_order((*it)->get_id());
 						}
 					}
 						
 				}
 				else {
-					std::cout << "\nYour order was added to passive buyers" << std::endl;
+					std::cout << "\nThe order with ID: " << order->get_id() << " was added to passive buyers" << std::endl;
 				}
 			}
 			if (order->get_side() == Order::Side::Sell){
 				//szukamy zlecenia kupna
+				for (auto it { buy_orders.begin() }; it != buy_orders.end(); ++it){
+					if (order->get_quantity() < (*it)->get_quantity() && order->get_price() >= order)
+				}
 			}
 		}	
 		
@@ -152,7 +160,7 @@ class OrderBook {
 
 			update_bid_and_ask_price();
 			sort_vectors();
-			match_order(&order);
+			match_order_limit(&order);
 		} 
 		
 		const std::string& get_name() const {
@@ -191,8 +199,8 @@ class OrderBook {
 		}
 
 		void print_all_orders() const {
-			int counter { 1 };
-			std::cout << "\nOrders for " << "'"<< get_name() << "'"<< ":" << std::endl;
+			size_t counter { 1 };
+			std::cout << "\n======= ORDERS FOR " << "'"<< get_name() << "'"<< "=======" << std::endl;
 			std::cout << "\n 	Current ASK price: " << get_ask_price() << std::endl;
 			std::cout << "\n	Current BID price: " << get_bid_price() << std::endl;
 			for (auto ptr : sell_orders) {
@@ -235,7 +243,7 @@ int main() {
 	Order *order4 = new Order(ID::get_unique_id(), Order::Side::Sell, 4181.25, 5); 
 	Order *order5 = new Order(ID::get_unique_id(), Order::Side::Buy, 4180.25, 20);
 	Order *order6 = new Order(ID::get_unique_id(), Order::Side::Buy, 4180.60, 2);
-	Order *order7 = new Order(ID::get_unique_id(), Order::Side::Buy, 4181.00, 18); //
+	Order *order7 = new Order(ID::get_unique_id(), Order::Side::Buy, 4181.25, 20); //
 	ob.add_order(*order1);
 	ob.add_order(*order2);
 	ob.add_order(*order3);
