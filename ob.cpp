@@ -103,7 +103,9 @@ class OrderBook {
 			if (order->get_side() == Order::Side::Sell){
 				//szukamy zlecenia kupna
 				for (auto it { buy_orders.begin() }; it != buy_orders.end(); ++it){
-					if (order->get_quantity() < (*it)->get_quantity() && order->get_price() >= order)
+					if (order->get_quantity() < (*it)->get_quantity() && order->get_price() >= (*it)->get_price()) {
+						
+					}
 				}
 			}
 		}	
