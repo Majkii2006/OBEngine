@@ -100,6 +100,7 @@ class OrderBook {
 					std::cout << "\nThe order with ID: " << order->get_id() << " was added to passive buyers" << std::endl;
 				}
 			}
+			/*
 			if (order->get_side() == Order::Side::Sell){
 				//szukamy zlecenia kupna
 				for (auto it { buy_orders.begin() }; it != buy_orders.end(); ++it){
@@ -108,6 +109,7 @@ class OrderBook {
 					}
 				}
 			}
+			*/
 		}	
 		
 
