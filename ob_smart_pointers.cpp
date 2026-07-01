@@ -44,7 +44,29 @@ class OrderBook {
 		
 		double m_bid_price { };
 		double m_ask_price { };
+		
+		void update_bid_ask() {
+			float actual_bid { 0.0 };
+			float actual_ask { 1000000.0 }; //nie do konca optymalne
+			if (orders.size() > 0) {
+				for (auto it { orders.begin() }; it != orders.end(); ++it) {
+					if ( (*it)->get_side() == Order::Side::Buy) { // bid cena rynkowa sprzedazy -> jak najwieksza wsrod ofert kupna
+						if ((*it)->get_price() > actual_bid){
+							actual_bid = (*it)->get_price();
+						}	
+					}
+					else {
+						if ((*it)->get_price() < actual_ask) { // ask cena rynkowa kupna -> jak najnizsza wsrod ofert sprzedazy
+							actual_ask = (*it)->get_price();	
+						}
 
+					}
+				}
+				m_bid_price = actual_bid;
+				m_ask_price = actual_ask;
+			}
+			
+		}
 
 	public:
 		OrderBook(std::string name) : m_name(name) {}
@@ -72,6 +94,9 @@ class OrderBook {
 		
 		void add_order(std::unique_ptr<Order>& order) {
 				orders.push_back(std::move(order));
+				// then we need to check if we can fill it up instantly
+				// is it neccessery to sort it?? maybe it's not
+				update_bid_ask();		
 			
 		}
 
@@ -148,6 +173,9 @@ int main() {
 	ob.add_order(order5);
 	ob.add_order(order6);
 	ob.add_order(order7);
+
+	std::cout << "\nASK: " << ob.get_ask_price();
+	std::cout << "\nBID: " << ob.get_bid_price();
 
 	ob.print_all_orders();
 
