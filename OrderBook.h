@@ -1,4 +1,7 @@
 #pragma once
+#ifndef OB_CLASS_H
+#define OB_CLASS_H
+
 
 #include <cmath>
 
@@ -13,15 +16,18 @@ class Order {
 
 	public:
 		enum class Side { Sell, Buy };
+		enum class Type { Market, Limit, Stop, FOK, IOC}; //Fill or Kill, Immediate or Cancel
 
 	private:
 		size_t m_id { };
 		Side m_side { };
 		double m_price { };
-		int m_quantity { };	
+		int m_quantity { };
+		Type m_type { };
+
 	public:
-		Order(size_t id, Side side, double price, int quantity) : 
-			m_id(id), m_side(side), m_price(price), m_quantity(quantity) {};
+		Order(size_t id, Side side, double price, int quantity, Type type) : 
+			m_id(id), m_side(side), m_price(price), m_quantity(quantity), m_type(type) {};
 		~Order() { };
 		
 		size_t get_id() const {
@@ -38,6 +44,10 @@ class Order {
 
 		int get_quantity() const {
 			return m_quantity;
+		}
+
+		Type get_type() const {
+			return m_type;
 		}
 };
 
@@ -70,9 +80,50 @@ class OrderBook {
 				m_bid_price = actual_bid;
 				m_ask_price = actual_ask;
 			}
-			
 		}
 
+		void order_job_behaviour(std::unique_ptr<Order>& order){
+			if (order->get_type() == Order::Type::Market){
+				std::cout << "\nMarket Type" << std::endl;
+				market_job(order);
+			}
+			if (order->get_type() == Order::Type::Limit) {
+				std::cout << "\nLimit Type" << std::endl;
+				limit_job();
+			}
+			if (order->get_type() == Order::Type::Stop) {
+				std::cout << "\nStop Type" << std::endl;
+				stop_job();
+			}
+			if (order->get_type() == Order::Type::FOK) {
+				std::cout << "\nFill or Kill Type" << std::endl;
+				fok_job();
+			}
+			if (order->get_type() == Order::Type::IOC) {
+				std::cout << "\nIOC Type" << std::endl;
+				ioc_job();
+			}
+		}
+
+		// LOGIC OF DIFFERENT ORDERS TYPE
+
+		void market_job(std::unique_ptr<Order>& order) {
+			if (order->get_side() == Order::Side::Buy && order->get_price() >= get_ask_price()) {
+					
+			}
+		}
+		void limit_job() {
+
+		}
+		void stop_job() {
+
+		}
+		void fok_job() {
+
+		}
+		void ioc_job() {
+
+		}
 
 	public:
 		OrderBook(std::string name) : m_name(name) {}
@@ -99,10 +150,15 @@ class OrderBook {
 		}
 		
 		void add_order(std::unique_ptr<Order>& order) {
+				// Jesli mamy taka sama cene oraz taki sam typ to trzeba zmienic wolumen juz istniejacego w vectorze orderu a nie nowy
+				// ale to zajme sie tym na dalszym etapie
+
+				// Wrzucenie na koniec vectora wskaznik do obiektu
 				orders.push_back(std::move(order));
-				// then we need to check if we can fill it up instantly
-				// is it neccessery to sort it?? maybe it's not
-				update_bid_ask();		
+				// Aktualizuje ceny bid i ask				
+				update_bid_ask();
+				// Wykonanie odpowiedniego zachowania w zaleznosci od rodzaju zlecenia 
+				order_job_behaviour(order);	
 			
 		}
 
@@ -144,20 +200,9 @@ class OrderBook {
 			}
 			
 		}
-			
-
-
-
-
 };
 
+#endif
 
-namespace ID {
-	size_t get_unique_id() {
-		static size_t id {};
-		id++;
-		return id+1000;
-	}
-}
 
 
