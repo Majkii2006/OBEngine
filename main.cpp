@@ -1,5 +1,8 @@
+#include <cmath>
+
 #include <algorithm>
 #include <iostream>
+#include <limits>
 #include <memory>
 #include <string>
 #include <vector>
@@ -46,8 +49,8 @@ class OrderBook {
 		double m_ask_price { };
 		
 		void update_bid_ask() {
-			float actual_bid { 0.0 };
-			float actual_ask { 1000000.0 }; //nie do konca optymalne
+			double actual_bid { 0.0 };
+			double actual_ask { std::numeric_limits<double>::max() }; //nie do konca optymalne
 			if (orders.size() > 0) {
 				for (auto it { orders.begin() }; it != orders.end(); ++it) {
 					if ( (*it)->get_side() == Order::Side::Buy) { // bid cena rynkowa sprzedazy -> jak najwieksza wsrod ofert kupna
@@ -67,6 +70,7 @@ class OrderBook {
 			}
 			
 		}
+
 
 	public:
 		OrderBook(std::string name) : m_name(name) {}
@@ -107,7 +111,8 @@ class OrderBook {
 					orders.erase(it);		
 					return;
 				}
-			}							
+			}			
+			update_bid_ask();		
 		}
 
 		void print_all_orders() const {
@@ -168,14 +173,12 @@ int main() {
 	// With these methods we are moving ownership to the vector of uniquepointers pointing to the each of the orders
 	ob.add_order(order1);
 	ob.add_order(order2);
-	ob.add_order(order3);	
+	ob.add_order(order3);
 	ob.add_order(order4);
 	ob.add_order(order5);
 	ob.add_order(order6);
 	ob.add_order(order7);
 
-	std::cout << "\nASK: " << ob.get_ask_price();
-	std::cout << "\nBID: " << ob.get_bid_price();
 
 	ob.print_all_orders();
 
