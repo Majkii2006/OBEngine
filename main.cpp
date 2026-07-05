@@ -22,7 +22,7 @@ int main() {
 	std::unique_ptr<Order> order4 = std::make_unique<Order>(Order(ID::get_unique_id(), Order::Side::Sell, 4181.25, 5, Order::Type::Market)); 
 	std::unique_ptr<Order> order5 = std::make_unique<Order>(Order(ID::get_unique_id(), Order::Side::Buy, 4180.25, 20, Order::Type::Market));
 	std::unique_ptr<Order> order6 = std::make_unique<Order>(Order(ID::get_unique_id(), Order::Side::Buy, 4180.60, 2, Order::Type::Market));
-	std::unique_ptr<Order> order7 = std::make_unique<Order>(Order(ID::get_unique_id(), Order::Side::Buy, 4181.25, 20, Order::Type::Market)); //
+	//std::unique_ptr<Order> order7 = std::make_unique<Order>(Order(ID::get_unique_id(), Order::Side::Buy, 4181.25, 20, Order::Type::Market)); //
 	
 	// With these methods we are moving ownership to the vector of uniquepointers pointing to the each of the orders
 	ob.add_order(order1);
@@ -31,8 +31,7 @@ int main() {
 	ob.add_order(order4);
 	ob.add_order(order5);
 	ob.add_order(order6);
-	ob.add_order(order7);
-
+	//ob.add_order(order7);
 
 	ob.print_all_orders();
 

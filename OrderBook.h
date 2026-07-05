@@ -1,4 +1,8 @@
 #pragma once
+#include <functional>
+#include <iterator>
+#include <stdexcept>
+
 #ifndef OB_CLASS_H
 #define OB_CLASS_H
 
@@ -55,14 +59,25 @@ class OrderBook {
 	private:
 		std::string m_name { };
 		std::vector<std::unique_ptr<Order>> orders;
-	
-		
+
 		double m_bid_price { };
 		double m_ask_price { };
-		
+	
+		void sort_orders() {
+			if (orders.size() > 1){
+				std::stable_sort(orders.begin(), orders.end(), 
+						[](const std::unique_ptr<Order>& a, const std::unique_ptr<Order>& b) {
+								return a->get_price() > b->get_price();}
+						);
+			}
+		}
+
+
+
+
 		void update_bid_ask() {
 			double actual_bid { 0.0 };
-			double actual_ask { std::numeric_limits<double>::max() }; //nie do konca optymalne
+			double actual_ask { std::numeric_limits<double>::max() }; 
 			if (orders.size() > 0) {
 				for (auto it { orders.begin() }; it != orders.end(); ++it) {
 					if ( (*it)->get_side() == Order::Side::Buy) { // bid cena rynkowa sprzedazy -> jak najwieksza wsrod ofert kupna
@@ -109,7 +124,7 @@ class OrderBook {
 
 		void market_job(std::unique_ptr<Order>& order) {
 			if (order->get_side() == Order::Side::Buy && order->get_price() >= get_ask_price()) {
-					
+				
 			}
 		}
 		void limit_job() {
@@ -155,10 +170,14 @@ class OrderBook {
 
 				// Wrzucenie na koniec vectora wskaznik do obiektu
 				orders.push_back(std::move(order));
+				// Checkowanie jesli ordery mają to samo price, tą samą strone i ten sam typ -> wtedy łączymy
+				
+				// Sortowanie orderow
+				sort_orders();
 				// Aktualizuje ceny bid i ask				
 				update_bid_ask();
 				// Wykonanie odpowiedniego zachowania w zaleznosci od rodzaju zlecenia 
-				order_job_behaviour(order);	
+				//		order_job_behaviour(order);	
 			
 		}
 
@@ -170,7 +189,8 @@ class OrderBook {
 					return;
 				}
 			}			
-			update_bid_ask();		
+			update_bid_ask();
+			sort_orders();
 		}
 
 		void print_all_orders() const {
