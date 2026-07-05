@@ -52,11 +52,9 @@ int main() {
 
         	switch (user_choice) {
         		case 1: {
-				std::cout << "1";
 				break;
 			}
 			case 2: {
-				std::cout << "2";
 				break;
 			}
 		}
