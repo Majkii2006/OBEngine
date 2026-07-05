@@ -35,9 +35,7 @@ int main() {
 
 	ob.print_all_orders();
 
-	ob.delete_order(1001);
 
-	ob.print_all_orders();
 
 	return 0;
 }
