@@ -33,9 +33,35 @@ int main() {
 	ob.add_order(order6);
 	//ob.add_order(order7);
 
-	ob.print_all_orders();
 
+	int user_choice { };
 
+   	do {
+
+		ob.print_all_orders();
+		std::cout << "\nOption:"; 
+		std::cout << "\n1. Market"; 
+		std::cout << "\n2. Limit";
+		std::cout << "\nWybor: "; 
+
+        	if (!(std::cin >> user_choice)) {
+			std::cin.clear();            
+			std::cin.ignore(1000, '\n'); 
+            	    	continue;
+        	}
+
+        	switch (user_choice) {
+        		case 1: {
+				std::cout << "1";
+				break;
+			}
+			case 2: {
+				std::cout << "2";
+				break;
+			}
+		}
+
+	} while (user_choice != 0);
 
 	return 0;
 }

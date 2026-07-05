@@ -97,48 +97,6 @@ class OrderBook {
 			}
 		}
 
-		void order_job_behaviour(std::unique_ptr<Order>& order){
-			if (order->get_type() == Order::Type::Market){
-				std::cout << "\nMarket Type" << std::endl;
-				market_job(order);
-			}
-			if (order->get_type() == Order::Type::Limit) {
-				std::cout << "\nLimit Type" << std::endl;
-				limit_job();
-			}
-			if (order->get_type() == Order::Type::Stop) {
-				std::cout << "\nStop Type" << std::endl;
-				stop_job();
-			}
-			if (order->get_type() == Order::Type::FOK) {
-				std::cout << "\nFill or Kill Type" << std::endl;
-				fok_job();
-			}
-			if (order->get_type() == Order::Type::IOC) {
-				std::cout << "\nIOC Type" << std::endl;
-				ioc_job();
-			}
-		}
-
-		// LOGIC OF DIFFERENT ORDERS TYPE
-
-		void market_job(std::unique_ptr<Order>& order) {
-			if (order->get_side() == Order::Side::Buy && order->get_price() >= get_ask_price()) {
-				
-			}
-		}
-		void limit_job() {
-
-		}
-		void stop_job() {
-
-		}
-		void fok_job() {
-
-		}
-		void ioc_job() {
-
-		}
 
 	public:
 		OrderBook(std::string name) : m_name(name) {}
@@ -171,13 +129,11 @@ class OrderBook {
 				// Wrzucenie na koniec vectora wskaznik do obiektu
 				orders.push_back(std::move(order));
 				// Checkowanie jesli ordery mają to samo price, tą samą strone i ten sam typ -> wtedy łączymy
-				
+				// some function	
 				// Sortowanie orderow
 				sort_orders();
 				// Aktualizuje ceny bid i ask				
 				update_bid_ask();
-				// Wykonanie odpowiedniego zachowania w zaleznosci od rodzaju zlecenia 
-				//		order_job_behaviour(order);	
 			
 		}
 
@@ -198,22 +154,22 @@ class OrderBook {
 			std::cout << "\n======= ORDERS FOR " << "'"<< get_name() << "'"<< "=======" << std::endl;
 			std::cout << "\n 	Current ASK price: " << get_ask_price() << std::endl;
 			std::cout << "\n	Current BID price: " << get_bid_price() << std::endl;
-			for (auto &ptr : orders) {
-				if ( ptr->get_side() == Order::Side::Sell){
+			for (auto &order : orders) {
+				if ( order->get_side() == Order::Side::Sell){
 					std::cout << "\nOrder number: " << counter << std::endl;
-					std::cout << "Order ID: " << ptr->get_id() << std::endl;
-					std::cout << ptr->get_price() << " ";
-					std::cout << ptr->get_quantity() << " ";
+					std::cout << "Order ID: " << order->get_id() << std::endl;
+					std::cout << order->get_price() << " ";
+					std::cout << order->get_quantity() << " ";
 					std::cout << "Sell" << std::endl;	
 					counter++;
 				}
 			}
-			for (auto &ptr : orders) {
-				if (ptr->get_side() == Order::Side::Buy) {
+			for (auto &order : orders) {
+				if (order->get_side() == Order::Side::Buy) {
 					std::cout << "\nOrder number: " << counter << std::endl;
-					std::cout << "Order ID: " << ptr->get_id() << std::endl;
-					std::cout << ptr->get_price() << " ";
-					std::cout << ptr->get_quantity() << " ";
+					std::cout << "Order ID: " << order->get_id() << std::endl;
+					std::cout << order->get_price() << " ";
+					std::cout << order->get_quantity() << " ";
 					std::cout << "Buy" << std::endl;	
 					counter++;
 				}
