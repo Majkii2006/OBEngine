@@ -180,7 +180,7 @@ class OrderBook {
 				if ( order->get_side() == Order::Side::Sell){
 					std::cout << RED <<"\nID: " << order->get_id() << " (Sell)"<< RESET << std::endl;
 					std::cout << "Price: " << order->get_price() << std::endl;
-					std::cout << "Quantity: " << order->get_quantity() << std::endl;
+					std::cout << "Quantity: " << order->get_quantity();
 				}
 			}
 			std::cout << YELLOW <<"\n---------------" << " Spread: " << calc_spread() <<" pts."<< RESET << std::endl;
@@ -188,7 +188,7 @@ class OrderBook {
 				if (order->get_side() == Order::Side::Buy) {
 					std::cout << GREEN << "\nID: " << order->get_id() << " (Buy)"<< RESET << std::endl;
 					std::cout << "Price: " << order->get_price() << std::endl;
-					std::cout << "Quantity: " << order->get_quantity() << std::endl;
+					std::cout << "Quantity: " << order->get_quantity();
 				}
 			}
 			
