@@ -4,6 +4,12 @@
 
 #include "OrderBook.h"
 
+#define RESET   "\033[0m"
+#define RED     "\033[31m"      /* Red */
+#define GREEN   "\033[32m"      /* Green */
+
+
+
 namespace ID {
 	size_t get_unique_id() {
 		static size_t id {};
@@ -12,17 +18,25 @@ namespace ID {
 	}
 }
 
-int main() {
+bool input_validation(int &user_choice) {
+	if (!(std::cin >> user_choice)) {
+		std::cin.clear();            
+		std::cin.ignore(1000, '\n'); 
+		return true;
+        }
+        return false;
+}
 
-	OrderBook ob("OrderBook");
+int main() {
+	std::string name { "Main OrderBook" };
+	auto &ob = OrderBook::getInstance(name);
+
 	// These pointers have ownership only for easy making an object, its only for a while	
 	std::unique_ptr<Order> order1 = std::make_unique<Order>(Order(ID::get_unique_id(), Order::Side::Buy, 4180.50, 22, Order::Type::Market)); 
 	std::unique_ptr<Order> order2 = std::make_unique<Order>(Order(ID::get_unique_id(), Order::Side::Buy, 4180.75, 15, Order::Type::Market));
 	std::unique_ptr<Order> order3 = std::make_unique<Order>(Order(ID::get_unique_id(), Order::Side::Sell, 4181.00, 18, Order::Type::Market)); //
 	std::unique_ptr<Order> order4 = std::make_unique<Order>(Order(ID::get_unique_id(), Order::Side::Sell, 4181.25, 5, Order::Type::Market)); 
 	std::unique_ptr<Order> order5 = std::make_unique<Order>(Order(ID::get_unique_id(), Order::Side::Buy, 4180.25, 20, Order::Type::Market));
-	std::unique_ptr<Order> order6 = std::make_unique<Order>(Order(ID::get_unique_id(), Order::Side::Buy, 4180.60, 2, Order::Type::Market));
-	//std::unique_ptr<Order> order7 = std::make_unique<Order>(Order(ID::get_unique_id(), Order::Side::Buy, 4181.25, 20, Order::Type::Market)); //
 	
 	// With these methods we are moving ownership to the vector of uniquepointers pointing to the each of the orders
 	ob.add_order(order1);
@@ -30,8 +44,6 @@ int main() {
 	ob.add_order(order3);
 	ob.add_order(order4);
 	ob.add_order(order5);
-	ob.add_order(order6);
-	//ob.add_order(order7);
 
 
 	int user_choice { };
@@ -42,7 +54,8 @@ int main() {
 		std::cout << "\nOption:"; 
 		std::cout << "\n1. Market"; 
 		std::cout << "\n2. Limit";
-		std::cout << "\nWybor: "; 
+		std::cout << "\n0. Quit";
+		std::cout << "\nChoose: "; 
 
         	if (!(std::cin >> user_choice)) {
 			std::cin.clear();            
@@ -52,10 +65,51 @@ int main() {
 
         	switch (user_choice) {
         		case 1: {
-				break;
+        			int user_choice { };
+				std::cout << "\nOption:";
+				std::cout << "\n1. Buy";
+				std::cout << "\n2. Sell";
+				std::cout << "\nChoose:";
+
+				if(input_validation(user_choice)) {
+					continue;
+				}
+
+
+				switch (user_choice) {
+					case 1: {
+							std::cout << "You choosed buy";
+							break;
+						}
+					case 2: {
+							std::cout << "You choosed sell";
+							break;
+						}
+				}
+			break;
 			}
 			case 2: {
-				break;
+        			int user_choice { };
+				std::cout << "\nOption:";
+				std::cout << "\n1. Buy";
+				std::cout << "\n2. Sell";
+				std::cout << "\nChoose:";
+	
+				if(input_validation(user_choice)) {
+					continue;
+				}
+
+				switch (user_choice) {
+					case 1: {
+							std::cout << "You choosed buy";
+							break;
+						}
+					case 2: {
+							std::cout << "You choosed sell";
+							break;
+						}
+				}
+			break;
 			}
 		}
 

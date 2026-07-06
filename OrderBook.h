@@ -16,6 +16,14 @@
 #include <string>
 #include <vector>
 
+
+#define RESET   "\033[0m"
+#define RED     "\033[31m"      /* Red */
+#define GREEN   "\033[32m"      /* Green */
+#define YELLOW  "\033[33m"      /* Yellow */
+
+
+
 class Order {
 
 	public:
@@ -62,6 +70,8 @@ class OrderBook {
 
 		double m_bid_price { };
 		double m_ask_price { };
+
+		OrderBook(std::string name) : m_name(name) {}
 	
 		void sort_orders() {
 			if (orders.size() > 1){
@@ -97,10 +107,16 @@ class OrderBook {
 			}
 		}
 
-
 	public:
-		OrderBook(std::string name) : m_name(name) {}
 		~OrderBook() = default;
+
+		static OrderBook& getInstance(std::string& name) {
+			static OrderBook instance(name);
+			return instance;
+		}
+
+		OrderBook(const OrderBook& other) = delete;
+		void operator=(const OrderBook& other) = delete;
 
 		const std::string& get_name() const {
 			return m_name;
@@ -121,6 +137,12 @@ class OrderBook {
 		double get_bid_price() const {
 			return m_bid_price;
 		}
+
+		double calc_spread() const {
+			return m_ask_price - m_bid_price;	
+		}
+
+
 		
 		void add_order(std::unique_ptr<Order>& order) {
 				// Jesli mamy taka sama cene oraz taki sam typ to trzeba zmienic wolumen juz istniejacego w vectorze orderu a nie nowy
@@ -134,6 +156,7 @@ class OrderBook {
 				sort_orders();
 				// Aktualizuje ceny bid i ask				
 				update_bid_ask();
+				
 			
 		}
 
@@ -150,28 +173,22 @@ class OrderBook {
 		}
 
 		void print_all_orders() const {
-			size_t counter { 1 };
 			std::cout << "\n======= ORDERS FOR " << "'"<< get_name() << "'"<< "=======" << std::endl;
-			std::cout << "\n 	Current ASK price: " << get_ask_price() << std::endl;
-			std::cout << "\n	Current BID price: " << get_bid_price() << std::endl;
+			//std::cout << "\n 	Current ASK price: " << get_ask_price() << std::endl;
+			//std::cout << "\n	Current BID price: " << get_bid_price() << std::endl;
 			for (auto &order : orders) {
 				if ( order->get_side() == Order::Side::Sell){
-					std::cout << "\nOrder number: " << counter << std::endl;
-					std::cout << "Order ID: " << order->get_id() << std::endl;
-					std::cout << order->get_price() << " ";
-					std::cout << order->get_quantity() << " ";
-					std::cout << "Sell" << std::endl;	
-					counter++;
+					std::cout << RED <<"\nID: " << order->get_id() << " (Sell)"<< RESET << std::endl;
+					std::cout << "Price: " << order->get_price() << std::endl;
+					std::cout << "Quantity: " << order->get_quantity() << std::endl;
 				}
 			}
+			std::cout << YELLOW <<"\n---------------" << " Spread: " << calc_spread() <<" pts."<< RESET << std::endl;
 			for (auto &order : orders) {
 				if (order->get_side() == Order::Side::Buy) {
-					std::cout << "\nOrder number: " << counter << std::endl;
-					std::cout << "Order ID: " << order->get_id() << std::endl;
-					std::cout << order->get_price() << " ";
-					std::cout << order->get_quantity() << " ";
-					std::cout << "Buy" << std::endl;	
-					counter++;
+					std::cout << GREEN << "\nID: " << order->get_id() << " (Buy)"<< RESET << std::endl;
+					std::cout << "Price: " << order->get_price() << std::endl;
+					std::cout << "Quantity: " << order->get_quantity() << std::endl;
 				}
 			}
 			
