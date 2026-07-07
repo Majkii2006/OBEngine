@@ -9,15 +9,6 @@
 #define GREEN   "\033[32m"      /* Green */
 
 
-
-namespace ID {
-	size_t get_unique_id() {
-		static size_t id {};
-		id++;
-		return id+1000;
-	}
-}
-
 bool input_validation(int &user_choice) {
 	if (!(std::cin >> user_choice)) {
 		std::cin.clear();            
@@ -50,10 +41,10 @@ int main() {
 
    	do {
 
-		ob.print_all_orders();
-		std::cout << "\nOption:"; 
-		std::cout << "\n1. Market"; 
-		std::cout << "\n2. Limit";
+		std::cout << "\nOption:";
+		std::cout << "\n1. Print OrderBook"; 
+		std::cout << "\n2. Market"; 
+		std::cout << "\n3. Limit";
 		std::cout << "\n0. Quit";
 		std::cout << "\nChoose: "; 
 
@@ -64,7 +55,12 @@ int main() {
         	}
 
         	switch (user_choice) {
-        		case 1: {
+			case 1: {
+					ob.print_all_orders();
+					break;
+				}
+
+        		case 2: {
         			int user_choice { };
 				std::cout << "\nOption:";
 				std::cout << "\n1. Buy";
@@ -78,7 +74,20 @@ int main() {
 
 				switch (user_choice) {
 					case 1: {
-							std::cout << "You choosed buy";
+							int user_quantity { };
+							std::cout << "Enter order quantity: ";
+							std::cin >> user_quantity;
+							if (user_choice == 1) {
+								std::cout << "\nSubmitting market buy order for " << user_quantity 
+									<< " units..." << std::endl;
+								ob.market_order_buy(user_quantity);
+								ob.print_all_orders();
+
+							}
+							else if (user_choice == 2) {
+								ob.market_order_sell(user_quantity);
+							}
+							
 							break;
 						}
 					case 2: {
@@ -88,7 +97,7 @@ int main() {
 				}
 			break;
 			}
-			case 2: {
+			case 3: {
         			int user_choice { };
 				std::cout << "\nOption:";
 				std::cout << "\n1. Buy";

@@ -1,4 +1,6 @@
 #pragma once
+#include <cstdint>
+
 #include <functional>
 #include <iterator>
 #include <stdexcept>
@@ -21,6 +23,15 @@
 #define RED     "\033[31m"      /* Red */
 #define GREEN   "\033[32m"      /* Green */
 #define YELLOW  "\033[33m"      /* Yellow */
+
+
+namespace ID {
+	size_t get_unique_id() {
+		static size_t id {};
+		id++;
+		return id+1000;
+	}
+}
 
 
 
@@ -60,6 +71,18 @@ class Order {
 
 		Type get_type() const {
 			return m_type;
+		}
+
+		int update_order_quantity(int quantity, int operation_type) {
+			if (operation_type == 1) {
+				return m_quantity = m_quantity + quantity; 
+			} 
+			else if (operation_type == 0) {
+				return m_quantity = m_quantity - quantity;
+			}
+			else {
+				return -1000;
+			}
 		}
 };
 
@@ -141,8 +164,37 @@ class OrderBook {
 		double calc_spread() const {
 			return m_ask_price - m_bid_price;	
 		}
+		
 
+		void market_order_buy(int quantity) {
+			if (quantity == 0) {
+				std::cout << "\nNothing to buy" << std::endl;
+				return;
+			}
+			int initial_quantity { quantity };
+			for (auto it { orders.rbegin() }; it != orders.rend(); ++it) {
+				if ( (*it)->get_side() == Order::Side::Sell ) {
+					if (quantity >= (*it)->get_quantity()) {
+						quantity = quantity - (*it)->get_quantity();
+						delete_order((*it)->get_id());
+						refresh_state();
+					} 
+					else if (quantity < (*it)->get_quantity()) {
+						(*it)->update_order_quantity(quantity, 0);
+						refresh_state();
+						return;
 
+					}
+					
+				}
+			} 
+			std::cout << "Filled " << initial_quantity - quantity << " / "<< initial_quantity << 
+				" units " << "@" << std::endl;
+		}
+
+		void market_order_sell(int quantity) {
+
+		}
 		
 		void add_order(std::unique_ptr<Order>& order) {
 				// Jesli mamy taka sama cene oraz taki sam typ to trzeba zmienic wolumen juz istniejacego w vectorze orderu a nie nowy
@@ -158,6 +210,12 @@ class OrderBook {
 				update_bid_ask();
 				
 			
+		}
+
+		void refresh_state() {
+			sort_orders();
+			update_bid_ask();
+			calc_spread();
 		}
 
 		void delete_order(size_t id) {
@@ -176,19 +234,25 @@ class OrderBook {
 			std::cout << "\n======= ORDERS FOR " << "'"<< get_name() << "'"<< "=======" << std::endl;
 			//std::cout << "\n 	Current ASK price: " << get_ask_price() << std::endl;
 			//std::cout << "\n	Current BID price: " << get_bid_price() << std::endl;
+			bool any_sell { false };
 			for (auto &order : orders) {
 				if ( order->get_side() == Order::Side::Sell){
 					std::cout << RED <<"\nID: " << order->get_id() << " (Sell)"<< RESET << std::endl;
 					std::cout << "Price: " << order->get_price() << std::endl;
-					std::cout << "Quantity: " << order->get_quantity();
+					std::cout << "Quantity: " << order->get_quantity() << std::endl;
+					any_sell = true;
+
 				}
 			}
-			std::cout << YELLOW <<"\n---------------" << " Spread: " << calc_spread() <<" pts."<< RESET << std::endl;
+			if (any_sell) {
+				std::cout << YELLOW <<"\n---------------" << " Spread: " << calc_spread() <<" pts."<< RESET << std::endl;
+			}	
+
 			for (auto &order : orders) {
 				if (order->get_side() == Order::Side::Buy) {
 					std::cout << GREEN << "\nID: " << order->get_id() << " (Buy)"<< RESET << std::endl;
 					std::cout << "Price: " << order->get_price() << std::endl;
-					std::cout << "Quantity: " << order->get_quantity();
+					std::cout << "Quantity: " << order->get_quantity() << std::endl;
 				}
 			}
 			
