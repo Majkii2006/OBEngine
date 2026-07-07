@@ -1,5 +1,5 @@
 build: main.cpp 
-	g++ main.cpp --std=c++17 -g -o main
+	g++ main.cpp --std=c++17 -g -Wall -o main
 
 clean:
 	rm -f main
