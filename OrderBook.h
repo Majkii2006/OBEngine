@@ -181,8 +181,9 @@ class OrderBook {
 					} 
 					else if (quantity < (*it)->get_quantity()) {
 						(*it)->update_order_quantity(quantity, 0);
+						quantity = 0;
 						refresh_state();
-						return;
+						break;
 
 					}
 					
