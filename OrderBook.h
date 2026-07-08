@@ -96,16 +96,23 @@ class OrderBook {
 
 		OrderBook(std::string name) : m_name(name) {}
 	
-		void sort_orders() {
+		void sort_orders_descending() {
 			if (orders.size() > 1){
 				std::stable_sort(orders.begin(), orders.end(), 
 						[](const std::unique_ptr<Order>& a, const std::unique_ptr<Order>& b) {
-								return a->get_price() > b->get_price();}
+								return a->get_price() > b->get_price();} // sortowanie malejaco
 						);
 			}
 		}
 
-
+		void sort_orders_ascending() {
+			if (orders.size() > 1){
+				std::stable_sort(orders.begin(), orders.end(), 
+						[](const std::unique_ptr<Order>& a, const std::unique_ptr<Order>& b) {
+								return a->get_price() < b->get_price();} // sortowanie rosnaco
+						);
+			}
+		}
 
 
 		void update_bid_ask() {
@@ -177,7 +184,6 @@ class OrderBook {
 					if (quantity >= (*it)->get_quantity()) {
 						quantity = quantity - (*it)->get_quantity();
 						delete_order((*it)->get_id());
-						refresh_state();
 					} 
 					else if (quantity < (*it)->get_quantity()) {
 						(*it)->update_order_quantity(quantity, 0);
@@ -194,7 +200,30 @@ class OrderBook {
 		}
 
 		void market_order_sell(int quantity) {
+			if (quantity == 0) {
+				std::cout << "\nNothing to buy" << std::endl;
+				return;
+			}
+			sort_orders_ascending(); //bo po usuniciu przesuwamy wszystko w lewo wiec musze posortowac zeby kierunek przejscia
+						 //byl iteratora byl w druga strone niz przesuwanie wektora po usunieciu
+			int initial_quantity { quantity };
+			for (auto it { orders.rbegin() }; it != orders.rend(); ++it) {
+				if ((*it)->get_side() == Order::Side::Buy) {
+					if (quantity >= (*it)->get_quantity()) {
+						quantity = quantity - (*it)->get_quantity();
+						delete_order((*it)->get_id());
+					}
+					else if (quantity < (*it)->get_quantity()) {
+						(*it)->update_order_quantity(quantity, 0);
+						quantity = 0;
+						refresh_state();
+						break;
 
+					}
+				}
+			}
+			std::cout << "Filled " << initial_quantity - quantity << " / "<< initial_quantity << 
+				" units " << "@" << std::endl;
 		}
 		
 		void add_order(std::unique_ptr<Order>& order) {
@@ -206,7 +235,7 @@ class OrderBook {
 				// Checkowanie jesli ordery mają to samo price, tą samą strone i ten sam typ -> wtedy łączymy
 				// some function	
 				// Sortowanie orderow
-				sort_orders();
+				sort_orders_descending();
 				// Aktualizuje ceny bid i ask				
 				update_bid_ask();
 				
@@ -214,7 +243,7 @@ class OrderBook {
 		}
 
 		void refresh_state() {
-			sort_orders();
+			sort_orders_descending();
 			update_bid_ask();
 			calc_spread();
 		}
@@ -228,7 +257,7 @@ class OrderBook {
 				}
 			}			
 			update_bid_ask();
-			sort_orders();
+			sort_orders_descending();
 		}
 
 		void print_all_orders() const {
