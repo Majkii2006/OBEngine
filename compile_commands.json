@@ -1,0 +1,66 @@
+[
+  {
+    "file": "src/order.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-Wall",
+      "-Wextra",
+      "-std=c++17",
+      "-Iinclude",
+      "-c",
+      "-o",
+      "src/order.o",
+      "src/order.cpp"
+    ],
+    "directory": "/home/michal_zadlo/Documents/C++_Learning/OrderBook",
+    "output": "src/order.o"
+  },
+  {
+    "file": "src/id_gen.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-Wall",
+      "-Wextra",
+      "-std=c++17",
+      "-Iinclude",
+      "-c",
+      "-o",
+      "src/id_gen.o",
+      "src/id_gen.cpp"
+    ],
+    "directory": "/home/michal_zadlo/Documents/C++_Learning/OrderBook",
+    "output": "src/id_gen.o"
+  },
+  {
+    "file": "src/orderbook.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-Wall",
+      "-Wextra",
+      "-std=c++17",
+      "-Iinclude",
+      "-c",
+      "-o",
+      "src/orderbook.o",
+      "src/orderbook.cpp"
+    ],
+    "directory": "/home/michal_zadlo/Documents/C++_Learning/OrderBook",
+    "output": "src/orderbook.o"
+  },
+  {
+    "file": "main.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-Wall",
+      "-Wextra",
+      "-std=c++17",
+      "-Iinclude",
+      "-c",
+      "-o",
+      "main.o",
+      "main.cpp"
+    ],
+    "directory": "/home/michal_zadlo/Documents/C++_Learning/OrderBook",
+    "output": "main.o"
+  }
+]
