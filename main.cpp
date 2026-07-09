@@ -117,14 +117,29 @@ int main() {
 				if(input_validation(user_choice)) {
 					continue;
 				}
-
+				int user_quantity { };
+				double user_price { };
 				switch (user_choice) {
-					case 1: {
-							std::cout << "You choosed buy";
+					case 1: {	
+							std::cout << "Enter order quantity: ";
+							std::cin >> user_quantity;
+							std::cout << "Enter max price: " << std::endl;
+							std::cin >> user_price;
+							std::cout << "\nSubmitting limit buy order for " << user_quantity 
+								<< " units..." << " @ " << "Price: " << user_price;
+							ob.limit_order_buy(user_quantity, user_price);
+							ob.print_all_orders();
 							break;
 						}
 					case 2: {
-							std::cout << "You choosed sell";
+							std::cout << "Enter order quantity: ";
+							std::cin >> user_quantity;
+							std::cout << "Enter min price: " << std::endl;
+							std::cin >> user_price;
+							std::cout << "\nSubmitting limit sell order for " << user_quantity
+								<< " units..." << " @ " << "Price: " << user_price;
+							ob.limit_order_sell(user_quantity, user_price);
+							ob.print_all_orders();
 							break;
 						}
 				}

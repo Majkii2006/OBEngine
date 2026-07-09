@@ -150,6 +150,18 @@ void OrderBook::market_order_sell(int quantity) {
               << average_order_price(price_sum, all_realized_quantity) << "\n";
 }
 
+void OrderBook::limit_order_buy(int quantity, double price) {
+	if (quantity == 0) {
+		std::cout << "Nothing to buy" << std::endl;
+	}
+}
+
+void OrderBook::limit_order_sell(int quantity, double price) {
+	if (quantity == 0) {
+		std::cout << "Nothing to buy" << std::endl;
+	}
+}
+
 void OrderBook::add_order(std::unique_ptr<Order>& order) {
     orders.push_back(std::move(order));
     sort_orders_descending();

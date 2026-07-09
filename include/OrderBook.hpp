@@ -88,6 +88,9 @@ public:
     void market_order_buy(int quantity);
     void market_order_sell(int quantity);
 
+    void limit_order_buy(int quantity, double price);
+    void limit_order_sell(int quantity, double price);
+
     void add_order(std::unique_ptr<Order>& order);
     void refresh_state();
     void delete_order(size_t id);
