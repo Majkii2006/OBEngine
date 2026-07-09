@@ -95,6 +95,7 @@ public:
     void refresh_state();
     void delete_order(size_t id);
     void print_all_orders() const;
+
 };
 
 #endif

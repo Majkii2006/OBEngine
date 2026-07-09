@@ -1,3 +1,6 @@
+#include <limits>
+#include <memory>
+
 #include "OrderBook.hpp"
 
 OrderBook::OrderBook(std::string name)
@@ -46,6 +49,9 @@ void OrderBook::update_bid_ask() {
                 if (it->get_price() < actual_ask)
                     actual_ask = it->get_price();
             }
+        }
+        if (actual_ask == std::numeric_limits<double>::max() ){
+        	actual_ask = 0;
         }
         m_bid_price = actual_bid;
         m_ask_price = actual_ask;
@@ -115,7 +121,7 @@ void OrderBook::market_order_buy(int quantity) {
 }
 
 void OrderBook::market_order_sell(int quantity) {
-    if (quantity == 0) {
+    if (quantity <= 0) {
         std::cout << "\nNothing to sell\n";
         return;
     }
@@ -151,14 +157,106 @@ void OrderBook::market_order_sell(int quantity) {
 }
 
 void OrderBook::limit_order_buy(int quantity, double price) {
-	if (quantity == 0) {
-		std::cout << "Nothing to buy" << std::endl;
+	
+	if (quantity <= 0) {
+		std::cout << "\nNothing to buy" << std::endl;
+		return;
 	}
+
+	if (price < get_ask_price()) {
+		std::cout << "\nAdding to the passive buyers..." 
+			<< std::endl;
+		std::unique_ptr<Order> order = std::make_unique<Order>
+			(ID::get_unique_id(), Order::Side::Buy, price, quantity, Order::Type::Limit);
+		std::cout << "Created new order with ID: " << order->get_id() << std::endl;
+		add_order(order);
+		return;
+	}
+
+	int initial_quantity { quantity };
+	int all_realized_quantity = 0;
+    	double price_sum = 0;
+
+	for (auto it { orders.rbegin() }; it != orders.rend(); ++it){
+		if ((*it)->get_side() == Order::Side::Sell && price >= (*it)->get_price()) {
+			if (quantity >= (*it)->get_quantity()) {
+				price_sum += (*it)->get_price() * (*it)->get_quantity();
+				all_realized_quantity += (*it)->get_quantity();
+				quantity -= (*it)->get_quantity();
+				delete_order((*it)->get_id());
+			}	
+			else {
+				(*it)->update_order_quantity(quantity, 0);
+		                price_sum += (*it)->get_price() * quantity;
+                		all_realized_quantity += quantity;
+				quantity = 0;
+				refresh_state();
+				break;
+			}
+		}
+	}	
+    	std::cout << "\nFilled " << initial_quantity - quantity << " / " << initial_quantity
+              << " units @ Avg. price: "
+              << average_order_price(price_sum, all_realized_quantity) << "\n";
+	if ( all_realized_quantity != initial_quantity ) {
+		//If partially filled add to orderbook as passive buyer:
+		int left_quantity { initial_quantity - all_realized_quantity };
+		std::unique_ptr<Order> order = std::make_unique<Order>
+			(ID::get_unique_id(), Order::Side::Buy, price, left_quantity, Order::Type::Limit);
+		add_order(order);
+		
+	}
+	
 }
 
 void OrderBook::limit_order_sell(int quantity, double price) {
-	if (quantity == 0) {
-		std::cout << "Nothing to buy" << std::endl;
+	if (quantity <= 0) {
+		std::cout << "\nNothing to buy" << std::endl;
+		return;
+	}
+	if (price > get_bid_price()) {
+		std::cout << "\nAdding to the passive buyers..." 
+			<< std::endl;
+		std::unique_ptr<Order> order = std::make_unique<Order>
+			(ID::get_unique_id(), Order::Side::Sell, price, quantity, Order::Type::Limit);
+		std::cout << "Created new order with ID: " << order->get_id() << std::endl;
+		add_order(order);
+		return;
+	}
+	int initial_quantity { quantity };
+	int all_realized_quantity = 0;
+    	double price_sum = 0;
+	
+	sort_orders_ascending();
+
+	for (auto it { orders.rbegin() }; it != orders.rend(); ++it){
+		if ((*it)->get_side() == Order::Side::Buy && price <= (*it)->get_price()) {
+			if (quantity >= (*it)->get_quantity()) {
+				price_sum += (*it)->get_price() * (*it)->get_quantity();
+				all_realized_quantity += (*it)->get_quantity();
+				quantity -= (*it)->get_quantity();
+				delete_order((*it)->get_id());
+			}	
+			else {
+				(*it)->update_order_quantity(quantity, 0);
+		                price_sum += (*it)->get_price() * quantity;
+                		all_realized_quantity += quantity;
+				quantity = 0;
+				refresh_state();
+				break;
+			}
+		}
+	}	
+    	std::cout << "\nFilled " << initial_quantity - quantity << " / " << initial_quantity
+              << " units @ Avg. price: "
+              << average_order_price(price_sum, all_realized_quantity) << "\n";
+	if ( all_realized_quantity != initial_quantity ) {
+		//If partially filled add to orderbook as passive buyer:
+		int left_quantity { initial_quantity - all_realized_quantity };
+		std::unique_ptr<Order> order = std::make_unique<Order>
+			(ID::get_unique_id(), Order::Side::Sell, price, left_quantity, Order::Type::Limit);
+		add_order(order);
+		
 	}
 }
 
@@ -166,6 +264,7 @@ void OrderBook::add_order(std::unique_ptr<Order>& order) {
     orders.push_back(std::move(order));
     sort_orders_descending();
     update_bid_ask();
+    calc_spread();
 }
 
 void OrderBook::refresh_state() {
@@ -189,20 +288,17 @@ void OrderBook::delete_order(size_t id) {
 void OrderBook::print_all_orders() const {
     std::cout << "\n======= ORDERS FOR '" << get_name() << "' =======\n";
 
-    bool any_sell = false;
 
     for (auto& order : orders) {
         if (order->get_side() == Order::Side::Sell) {
             std::cout << RED << "\nID: " << order->get_id() << " (Sell)" << RESET << "\n";
             std::cout << "Price: " << order->get_price() << "\n";
             std::cout << "Quantity: " << order->get_quantity() << "\n";
-            any_sell = true;
         }
     }
 
-    if (any_sell) {
-        std::cout << YELLOW << "\n--------------- Spread: "
-                  << calc_spread() << " pips " << RESET << "\n";
+    if (get_ask_price() != 0 && get_bid_price() != 0) {
+	    std::cout << YELLOW << "------------ Spread: " << calc_spread() << " pips" << RESET << std::endl;
     }
 
     for (auto& order : orders) {

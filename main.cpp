@@ -78,7 +78,7 @@ int main() {
 				std::cout << "\nOption:";
 				std::cout << "\n1. Buy";
 				std::cout << "\n2. Sell";
-				std::cout << "\nChoose:";
+				std::cout << "\nChoose: ";
 
 				if(input_validation(user_choice)) {
 					continue;
@@ -112,7 +112,7 @@ int main() {
 				std::cout << "\nOption:";
 				std::cout << "\n1. Buy";
 				std::cout << "\n2. Sell";
-				std::cout << "\nChoose:";
+				std::cout << "\nChoose: ";
 	
 				if(input_validation(user_choice)) {
 					continue;
