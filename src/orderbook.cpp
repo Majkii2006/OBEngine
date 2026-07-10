@@ -320,7 +320,49 @@ void OrderBook::delete_order(size_t id) {
     sort_orders_descending();
 }
 
-void OrderBook::print_all_orders() const {
+const std::string OrderBook::visualize_quantity(int quantity) const {
+	std::string quant { " |" };
+	const int CONST_BASE { 50 };
+	int res_of_division { static_cast<int>(quantity/CONST_BASE) };
+	if (res_of_division < 1) {
+		return quant.append("■");
+	}
+	for (int i { 0 }; i < res_of_division; ++i) {
+		quant.append("■");		
+	}
+	return quant;
+}
+
+void OrderBook::print_all_orders_compact() const {
+	std::cout << "Price  |  Quant" << std::endl;
+	std::cout << "==============" << std::endl;	
+	for (auto& order : orders) {
+		int temp_quantity { order->get_quantity() };
+		if (order->get_side() == Order::Side::Sell) {
+			std::cout << RED << BOLD << order->get_price() << RESET << "  " 
+				<< order->get_quantity() << visualize_quantity(temp_quantity) << std::endl;
+
+		}
+	}
+
+    	    if (get_ask_price() != 0 && get_bid_price() != 0) {
+	    	    std::cout << YELLOW << "------------" << std::endl;
+    	    }
+
+
+	for (auto& order : orders) {
+		int temp_quantity { order->get_quantity() };
+		if (order->get_side() == Order::Side::Buy) {
+			std::cout << GREEN << BOLD << order->get_price() << RESET << "  " 
+				<< order->get_quantity() << visualize_quantity(temp_quantity) << std::endl;
+		}
+	}
+	std::cout << "==============" << std::endl;	
+}
+
+
+
+void OrderBook::print_all_orders_full() const {
     std::cout << "\n======= ORDERS FOR '" << get_name() << "' =======\n";
 
 

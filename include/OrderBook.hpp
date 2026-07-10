@@ -24,6 +24,7 @@
 #define MAGENTA "\033[35m"
 #define CYAN    "\033[36m"
 #define WHITE   "\033[37m"
+#define BOLD	"\033[1m"
 
 namespace ID {
     size_t get_unique_id();   // deklaracja
@@ -94,7 +95,10 @@ public:
     void add_order(std::unique_ptr<Order>& order);
     void refresh_state();
     void delete_order(size_t id);
-    void print_all_orders() const;
+    void print_all_orders_full() const;
+    void print_all_orders_compact() const;
+
+    const std::string visualize_quantity(int quantity) const;
 
 };
 

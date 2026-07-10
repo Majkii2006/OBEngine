@@ -29,36 +29,74 @@ int main() {
 	auto &ob = OrderBook::getInstance(name);
 
 	// These pointers have ownership only for easy making an object, its only for a while	
-	std::unique_ptr<Order> order1 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4180.50, 22, Order::Type::Market); 
-	std::unique_ptr<Order> order2 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4180.75, 15, Order::Type::Market);
-	std::unique_ptr<Order> order3 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4181.00, 18, Order::Type::Market);
-	std::unique_ptr<Order> order4 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4181.25, 5, Order::Type::Market); 
-	std::unique_ptr<Order> order5 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4180.25, 20, Order::Type::Market);
-	std::unique_ptr<Order> order6 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4180.00, 3, Order::Type::Market);
-	std::unique_ptr<Order> order7 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4181.00, 9, Order::Type::Market);
+
+	std::unique_ptr<Order> order3  = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4182, 80, Order::Type::Market);
+	std::unique_ptr<Order> order4  = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4183, 35, Order::Type::Market);
+	std::unique_ptr<Order> order5  = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4179, 260, Order::Type::Market);
+	std::unique_ptr<Order> order6  = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4178, 155, Order::Type::Market);
+	std::unique_ptr<Order> order7  = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4182, 900, Order::Type::Market);
+	std::unique_ptr<Order> order8  = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4177, 500, Order::Type::Market);
+	std::unique_ptr<Order> order9  = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4176, 320, Order::Type::Market);
+	std::unique_ptr<Order> order10 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4175, 700, Order::Type::Market);
+	std::unique_ptr<Order> order13 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4184, 600, Order::Type::Market);
+	std::unique_ptr<Order> order14 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4181, 750, Order::Type::Market);
+	std::unique_ptr<Order> order15 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4180, 980, Order::Type::Market);
+	std::unique_ptr<Order> order16 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4183, 420, Order::Type::Market);
+	std::unique_ptr<Order> order17 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4179, 510, Order::Type::Market);
+	std::unique_ptr<Order> order18 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4184, 130, Order::Type::Market);
+	std::unique_ptr<Order> order19 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4178, 300, Order::Type::Market);
+	std::unique_ptr<Order> order20 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4185, 200, Order::Type::Market);
+	std::unique_ptr<Order> order21 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4186, 140, Order::Type::Market);
+	std::unique_ptr<Order> order22 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4185, 320, Order::Type::Market);
+	std::unique_ptr<Order> order23 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4184, 75,  Order::Type::Market);
+	std::unique_ptr<Order> order24 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4183, 510, Order::Type::Market);
+	std::unique_ptr<Order> order26 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4187, 260, Order::Type::Market);
+	std::unique_ptr<Order> order27 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4188, 450,  Order::Type::Market);
+	std::unique_ptr<Order> order28 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4189, 700, Order::Type::Market);
+	std::unique_ptr<Order> order29 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4190, 300, Order::Type::Market);
+	std::unique_ptr<Order> order30 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4191, 150, Order::Type::Market);
+
 
 
 
 
 	// With these methods we are moving ownership to the vector of uniquepointers pointing to the each of the orders
-	ob.add_order(order1);
-	ob.add_order(order2);
 	ob.add_order(order3);
 	ob.add_order(order4);
 	ob.add_order(order5);
 	ob.add_order(order6);
 	ob.add_order(order7);
+	ob.add_order(order8);
+	ob.add_order(order9);
+	ob.add_order(order10);
+	ob.add_order(order13);
+	ob.add_order(order14);
+	ob.add_order(order15);
+	ob.add_order(order16);
+	ob.add_order(order17);
+	ob.add_order(order18);
+	ob.add_order(order19);
+	ob.add_order(order20);
+	ob.add_order(order21);
+	ob.add_order(order22);
+	ob.add_order(order23);
+	ob.add_order(order24);
+	ob.add_order(order26);
+	ob.add_order(order27);
+	ob.add_order(order28);
+	ob.add_order(order29);
+	ob.add_order(order30);
 
 
 
 	int user_choice { };
 
    	do {
-
 		std::cout << "\nOption:";
-		std::cout << "\n1. Print OrderBook FULL"; 
-		std::cout << "\n2. Market"; 
-		std::cout << "\n3. Limit";
+		std::cout << "\n1. Print OrderBook COMPACT"; 
+		std::cout << "\n2. Print OrderBook ALL INFO"; 
+		std::cout << "\n3. Market";
+		std::cout << "\n4. Limit";
 		std::cout << "\n9. Check ASK and BID price";
 		std::cout << "\n0. Quit";
 		std::cout << "\nChoose: "; 
@@ -68,14 +106,19 @@ int main() {
 			std::cin.ignore(1000, '\n'); 
             	    	continue;
         	}
-
+		std::cout << "\n";
         	switch (user_choice) {
 			case 1: {
-					ob.print_all_orders();
+					ob.print_all_orders_compact();
 					break;
 				}
 
-        		case 2: {
+			case 2: {
+					ob.print_all_orders_full();
+					break;
+				}
+
+        		case 3: {
         			int user_choice { };
 				std::cout << "\nOption:";
 				std::cout << "\n1. Buy";
@@ -94,7 +137,7 @@ int main() {
 							std::cout << "\nSubmitting market buy order for " << user_quantity 
 								<< " units..." << std::endl;
 							ob.market_order_buy(user_quantity);
-							ob.print_all_orders();
+							ob.print_all_orders_compact();
 							break;
 						}
 					case 2: {
@@ -103,13 +146,13 @@ int main() {
 							std::cout << "\nSubmitting market sell order for " << user_quantity 
 								<< " units..." << std::endl;
 							ob.market_order_sell(user_quantity);
-							ob.print_all_orders();
+							ob.print_all_orders_compact();
 							break;
 						}
 				}
 			break;
 			}
-			case 3: {
+			case 4: {
         			int user_choice { };
 				std::cout << "\nOption:";
 				std::cout << "\n1. Buy";
@@ -130,7 +173,7 @@ int main() {
 							std::cout << "\nSubmitting limit buy order for " << user_quantity 
 								<< " units..." << " @ " << "Price: " << user_price;
 							ob.limit_order_buy(user_quantity, user_price);
-							ob.print_all_orders();
+							ob.print_all_orders_compact();
 							break;
 						}
 					case 2: {
@@ -141,15 +184,18 @@ int main() {
 							std::cout << "\nSubmitting limit sell order for " << user_quantity
 								<< " units..." << " @ " << "Price: " << user_price;
 							ob.limit_order_sell(user_quantity, user_price);
-							ob.print_all_orders();
+							ob.print_all_orders_compact();
 							break;
 						}
 				}
 			break;
 			}
+
 			case 9: {
+					std::cout << "==========="; 
 					std::cout << CYAN << "\nASK: " << ob.get_ask_price() << RESET;
-					std::cout << CYAN <<"\nBID: " << ob.get_bid_price() << RESET << std::endl;
+					std::cout << CYAN <<"\nBID: " << ob.get_bid_price() << RESET;
+					std::cout << "\n===========" << std::endl;
 					break;
 				}
 		}
