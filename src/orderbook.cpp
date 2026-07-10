@@ -117,11 +117,11 @@ void OrderBook::market_order_buy(int quantity) {
         }
     }
     auto stop = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     std::cout << "Filled " << initial_quantity - quantity << " / " << initial_quantity
               << " units @ Avg. price: "
               << average_order_price(price_sum, all_realized_quantity) << "\n";
-    std::cout << "Time taken: " << duration.count() << " nanoseconds" << std::endl;
+    std::cout << "Time taken: " << duration.count() << " microseconds" << std::endl;
 }
 
 void OrderBook::market_order_sell(int quantity) {
@@ -156,11 +156,11 @@ void OrderBook::market_order_sell(int quantity) {
         }
     }
     auto stop = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     std::cout << "Filled " << initial_quantity - quantity << " / " << initial_quantity
               << " units @ Avg. price: "
               << average_order_price(price_sum, all_realized_quantity) << "\n";
-    std::cout << "Time taken: " << duration.count() << " nanoseconds" << std::endl;
+    std::cout << "Time taken: " << duration.count() << " microseconds" << std::endl;
 }
 
 void OrderBook::limit_order_buy(int quantity, double price) {
@@ -203,11 +203,11 @@ void OrderBook::limit_order_buy(int quantity, double price) {
 		}
 	}
 	auto stop = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     	std::cout << "\nFilled " << initial_quantity - quantity << " / " << initial_quantity
               << " units @ Avg. price: "
               << average_order_price(price_sum, all_realized_quantity) << "\n";
-	std::cout << "Time taken: " << duration.count() << " nanoseconds" << std::endl;
+	std::cout << "Time taken: " << duration.count() << " microseconds" << std::endl;
 	if ( all_realized_quantity != initial_quantity ) {
 		//If partially filled add to orderbook as passive buyer:
 		int left_quantity { initial_quantity - all_realized_quantity };
@@ -259,11 +259,11 @@ void OrderBook::limit_order_sell(int quantity, double price) {
 		}
 	}	
 	auto stop = std::chrono::high_resolution_clock::now(); 
-	auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 		std::cout << "\nFilled " << initial_quantity - quantity << " / " << initial_quantity
               << " units @ Avg. price: "
               << average_order_price(price_sum, all_realized_quantity) << "\n";
-	std::cout << "Time taken: " << duration.count() << " nanoseconds" << std::endl;
+	std::cout << "Time taken: " << duration.count() << " microseconds" << std::endl;
 
 	if ( all_realized_quantity != initial_quantity ) {
 		//If partially filled add to orderbook as passive buyer:
