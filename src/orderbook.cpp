@@ -1,3 +1,4 @@
+#include <chrono>
 #include <limits>
 #include <memory>
 
@@ -87,6 +88,7 @@ double OrderBook::calc_spread() const {
 }
 
 void OrderBook::market_order_buy(int quantity) {
+    auto start = std::chrono::high_resolution_clock::now();
     if (quantity == 0) {
         std::cout << "\nNothing to buy\n";
         return;
@@ -114,13 +116,16 @@ void OrderBook::market_order_buy(int quantity) {
             }
         }
     }
-
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
     std::cout << "Filled " << initial_quantity - quantity << " / " << initial_quantity
               << " units @ Avg. price: "
               << average_order_price(price_sum, all_realized_quantity) << "\n";
+    std::cout << "Time taken: " << duration.count() << " nanoseconds" << std::endl;
 }
 
 void OrderBook::market_order_sell(int quantity) {
+    auto start = std::chrono::high_resolution_clock::now();
     if (quantity <= 0) {
         std::cout << "\nNothing to sell\n";
         return;
@@ -150,14 +155,16 @@ void OrderBook::market_order_sell(int quantity) {
             }
         }
     }
-
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
     std::cout << "Filled " << initial_quantity - quantity << " / " << initial_quantity
               << " units @ Avg. price: "
               << average_order_price(price_sum, all_realized_quantity) << "\n";
+    std::cout << "Time taken: " << duration.count() << " nanoseconds" << std::endl;
 }
 
 void OrderBook::limit_order_buy(int quantity, double price) {
-	
+	auto start = std::chrono::high_resolution_clock::now();
 	if (quantity <= 0) {
 		std::cout << "\nNothing to buy" << std::endl;
 		return;
@@ -194,10 +201,13 @@ void OrderBook::limit_order_buy(int quantity, double price) {
 				break;
 			}
 		}
-	}	
+	}
+	auto stop = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
     	std::cout << "\nFilled " << initial_quantity - quantity << " / " << initial_quantity
               << " units @ Avg. price: "
               << average_order_price(price_sum, all_realized_quantity) << "\n";
+	std::cout << "Time taken: " << duration.count() << " nanoseconds" << std::endl;
 	if ( all_realized_quantity != initial_quantity ) {
 		//If partially filled add to orderbook as passive buyer:
 		int left_quantity { initial_quantity - all_realized_quantity };
@@ -210,6 +220,7 @@ void OrderBook::limit_order_buy(int quantity, double price) {
 }
 
 void OrderBook::limit_order_sell(int quantity, double price) {
+	auto start = std::chrono::high_resolution_clock::now();
 	if (quantity <= 0) {
 		std::cout << "\nNothing to buy" << std::endl;
 		return;
@@ -247,9 +258,13 @@ void OrderBook::limit_order_sell(int quantity, double price) {
 			}
 		}
 	}	
-    	std::cout << "\nFilled " << initial_quantity - quantity << " / " << initial_quantity
+	auto stop = std::chrono::high_resolution_clock::now(); 
+	auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
+		std::cout << "\nFilled " << initial_quantity - quantity << " / " << initial_quantity
               << " units @ Avg. price: "
               << average_order_price(price_sum, all_realized_quantity) << "\n";
+	std::cout << "Time taken: " << duration.count() << " nanoseconds" << std::endl;
+
 	if ( all_realized_quantity != initial_quantity ) {
 		//If partially filled add to orderbook as passive buyer:
 		int left_quantity { initial_quantity - all_realized_quantity };
@@ -261,6 +276,26 @@ void OrderBook::limit_order_sell(int quantity, double price) {
 }
 
 void OrderBook::add_order(std::unique_ptr<Order>& order) {
+    // Gdy ordery maja taki sam side i cene dodajemy quantity
+    if (order->get_side() == Order::Side::Buy) {
+    	    for (auto it { orders.begin() }; it != orders.end(); ++it) {
+		if ((*it)->get_side() == Order::Side::Buy && (*it)->get_price() == order->get_price()) {
+			(*it)->update_order_quantity(order->get_quantity(), 1);
+			delete_order(order->get_id());
+			return;
+		} 
+    	    }
+    }
+    else if (order->get_side() == Order::Side::Sell) {
+    	    for (auto it { orders.begin() }; it != orders.end(); ++it){
+		if ((*it)->get_side() == Order::Side::Sell && (*it)->get_price() == order->get_price()) {
+			(*it)->update_order_quantity(order->get_quantity(), 1);
+			delete_order(order->get_id());
+			return;
+		}
+    	    }
+    }
+
     orders.push_back(std::move(order));
     sort_orders_descending();
     update_bid_ask();

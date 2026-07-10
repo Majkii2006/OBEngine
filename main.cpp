@@ -31,10 +31,11 @@ int main() {
 	// These pointers have ownership only for easy making an object, its only for a while	
 	std::unique_ptr<Order> order1 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4180.50, 22, Order::Type::Market); 
 	std::unique_ptr<Order> order2 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4180.75, 15, Order::Type::Market);
-	std::unique_ptr<Order> order3 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4181.00, 18, Order::Type::Market); //
+	std::unique_ptr<Order> order3 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4181.00, 18, Order::Type::Market);
 	std::unique_ptr<Order> order4 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4181.25, 5, Order::Type::Market); 
 	std::unique_ptr<Order> order5 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4180.25, 20, Order::Type::Market);
 	std::unique_ptr<Order> order6 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4180.00, 3, Order::Type::Market);
+	std::unique_ptr<Order> order7 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4181.00, 9, Order::Type::Market);
 
 
 
@@ -46,6 +47,7 @@ int main() {
 	ob.add_order(order4);
 	ob.add_order(order5);
 	ob.add_order(order6);
+	ob.add_order(order7);
 
 
 
@@ -54,7 +56,7 @@ int main() {
    	do {
 
 		std::cout << "\nOption:";
-		std::cout << "\n1. Print OrderBook"; 
+		std::cout << "\n1. Print OrderBook FULL"; 
 		std::cout << "\n2. Market"; 
 		std::cout << "\n3. Limit";
 		std::cout << "\n9. Check ASK and BID price";
