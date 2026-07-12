@@ -32,29 +32,25 @@ int main() {
 
 	std::unique_ptr<Order> order3  = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4182, 800, Order::Type::Market);
 	std::unique_ptr<Order> order4  = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4183, 305, Order::Type::Market);
-	std::unique_ptr<Order> order5  = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4179, 2600, Order::Type::Market);
-	std::unique_ptr<Order> order6  = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4178, 1505, Order::Type::Market);
-	std::unique_ptr<Order> order7  = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4182, 9000, Order::Type::Market);
-	std::unique_ptr<Order> order8  = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4177, 5000, Order::Type::Market);
-	std::unique_ptr<Order> order9  = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4176, 3200, Order::Type::Market);
-	std::unique_ptr<Order> order10 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4175, 7000, Order::Type::Market);
-	std::unique_ptr<Order> order13 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4184, 6000, Order::Type::Market);
-	std::unique_ptr<Order> order14 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4181, 7500, Order::Type::Market);
-	std::unique_ptr<Order> order15 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4180, 9800, Order::Type::Market);
-	std::unique_ptr<Order> order16 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4183, 4020, Order::Type::Market);
-	std::unique_ptr<Order> order17 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4179, 5100, Order::Type::Market);
-	std::unique_ptr<Order> order18 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4184, 1030000, Order::Type::Market);
-	std::unique_ptr<Order> order19 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4178, 3000, Order::Type::Market);
-	std::unique_ptr<Order> order20 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4185, 200000, Order::Type::Market);
-	std::unique_ptr<Order> order21 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4186, 1040, Order::Type::Market);
-	std::unique_ptr<Order> order22 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4185, 3020, Order::Type::Market);
+	std::unique_ptr<Order> order5  = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4179, 260, Order::Type::Market);
+	std::unique_ptr<Order> order6  = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4178, 155, Order::Type::Market);
+	std::unique_ptr<Order> order8  = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4177, 500, Order::Type::Market);
+	std::unique_ptr<Order> order9  = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4176, 320, Order::Type::Market);
+	std::unique_ptr<Order> order10 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4175, 700, Order::Type::Market);
+	std::unique_ptr<Order> order14 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4181, 750, Order::Type::Market);
+	std::unique_ptr<Order> order15 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4180, 980, Order::Type::Market);
+	std::unique_ptr<Order> order17 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4179, 510, Order::Type::Market);
+	std::unique_ptr<Order> order19 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Buy, 4178, 300, Order::Type::Market);
+	std::unique_ptr<Order> order20 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4185, 200, Order::Type::Market);
+	std::unique_ptr<Order> order21 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4186, 104, Order::Type::Market);
+	std::unique_ptr<Order> order22 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4185, 320, Order::Type::Market);
 	std::unique_ptr<Order> order23 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4184, 705,  Order::Type::Market);
-	std::unique_ptr<Order> order24 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4183, 5010, Order::Type::Market);
-	std::unique_ptr<Order> order26 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4187, 2060, Order::Type::Market);
-	std::unique_ptr<Order> order27 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4188, 4050,  Order::Type::Market);
-	std::unique_ptr<Order> order28 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4189, 7000, Order::Type::Market);
-	std::unique_ptr<Order> order29 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4190, 3000, Order::Type::Market);
-	std::unique_ptr<Order> order30 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4191, 1050, Order::Type::Market);
+	std::unique_ptr<Order> order24 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4183, 500, Order::Type::Market);
+	std::unique_ptr<Order> order26 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4187, 200, Order::Type::Market);
+	std::unique_ptr<Order> order27 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4188, 400,  Order::Type::Market);
+	std::unique_ptr<Order> order28 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4189, 700, Order::Type::Market);
+	std::unique_ptr<Order> order29 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4190, 300, Order::Type::Market);
+	std::unique_ptr<Order> order30 = std::make_unique<Order>(ID::get_unique_id(), Order::Side::Sell, 4191, 100, Order::Type::Market);
 
 
 
@@ -65,16 +61,12 @@ int main() {
 	ob.add_order(order4);
 	ob.add_order(order5);
 	ob.add_order(order6);
-	ob.add_order(order7);
 	ob.add_order(order8);
 	ob.add_order(order9);
 	ob.add_order(order10);
-	ob.add_order(order13);
 	ob.add_order(order14);
 	ob.add_order(order15);
-	ob.add_order(order16);
 	ob.add_order(order17);
-	ob.add_order(order18);
 	ob.add_order(order19);
 	ob.add_order(order20);
 	ob.add_order(order21);
