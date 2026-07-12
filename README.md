@@ -50,7 +50,7 @@ make run
 
 ### Execution order test plot:
 
-<img src="tests/1_executiontime_quant.jpg" alt="Test Showcase 1">
+<img src="tests/1_executiontime_quantity.png" alt="Test Showcase 1">
 
 
 ---
