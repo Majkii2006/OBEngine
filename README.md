@@ -15,6 +15,7 @@ Created engine is not indended to compete with the most efficient ones. This is 
 
 <p align="center">
   <img src="screenshots/9_3.jpg" alt="Showcase 1">
+  <img src="screenshots/9_4.jpg alt="Showcase 2">
 </p>
 
 ---
