@@ -48,7 +48,7 @@ make run
 ```
 ---
 
-### Execution order test plot:
+### Execution Order Test Plot:
 
 <p align="left">
   <img src="tests/1_executiontime_quantity.png" alt="Test Showcase 1">
