@@ -14,10 +14,7 @@ Created engine is not indended to compete with the most efficient ones. This is 
 ## Showcase
 
 <p align="center">
-  <img src="screenshots/9_1.jpg" alt="Showcase 1" width="25%">
-  <img src="screenshots/9_2.jpg" alt="Showcase 2" width="25%">
-  <img src="screenshots/9_3.jpg" alt="Showcase 3" width="25%">
-  <img src="screenshots/9_4.jpg" alt="Showcase 4" width="25%">
+  <img src="screenshots/9_3.jpg" alt="Showcase 1" width="25%">
 </p>
 
 ---
