@@ -46,6 +46,12 @@ Then run executable or do it by:
 ```bash
 make run
 ```
+---
+
+### Execution order test plot:
+
+<img src="tests/1_executiontime_quant.jpg" alt="Test Showcase 1">
+
 
 ---
   
