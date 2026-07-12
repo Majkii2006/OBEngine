@@ -1,7 +1,6 @@
 
 <p align="center">
   <img src="screenshots/ob.png" alt="Logo" width=20%>
-  
   OrderBook Matching Engine written in C++17.
 </p>
 
